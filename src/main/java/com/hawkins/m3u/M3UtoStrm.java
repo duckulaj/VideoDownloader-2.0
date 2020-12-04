@@ -32,6 +32,8 @@ public class M3UtoStrm {
 	private static M3UGroupList groups = M3UGroupList.getInstance();
 	private static M3UPlayList playlist = M3UPlayList.getInstance();
 	private static DownloadProperties downloadProperties = DownloadProperties.getInstance();
+	
+	private static String baseDirectory = downloadProperties.getDownloadPath() + File.separator;
 
 	public static void convertM3UtoStream () {
 
@@ -60,8 +62,7 @@ public class M3UtoStrm {
 
 		List<M3UItem> movies = filterItems(playlist.getPlayList(), ofType(Constants.MOVIE));
 		List<M3UItem> tvshows = filterItems(playlist.getPlayList(), ofType(Constants.TVSHOW));
-		// List<M3UItem> liveshows = filterItems(playlist.getPlayList(), ofType(Constants.LIVE));
-
+		
 		createMovieFolders(movies);
 		createTVshowFolders(tvshows);
 	}
@@ -103,6 +104,10 @@ public class M3UtoStrm {
 	public static Predicate<M3UItem> ofType(String type) {
 		return p -> p.getGroupType().equals(type);
 	}
+	
+	public static Predicate<M3UItem> ofTypeDefinition(String definition) {
+		return p -> p.getName().indexOf(definition) != -1 && p.getGroupType().equalsIgnoreCase(Constants.MOVIE);
+	}
 
 	public static List<M3UItem> filterItems (List<M3UItem> items, Predicate<M3UItem> predicate) {
 
@@ -111,102 +116,79 @@ public class M3UtoStrm {
 
 	public static void createMovieFolders (List<M3UItem> movies) {
 
-		List<M3UItem> FHDMovies = new ArrayList<M3UItem>();
-		List<M3UItem> UHDMovies = new ArrayList<M3UItem>();
+		/*
+		 * Movies can be FHD, UHD or normal definition.
+		 * We want the UHD to be th final version.
+		 */
+		 
+		List<M3UItem> FHDMovies = filterItems(playlist.getPlayList(), ofTypeDefinition(Constants.FHD));
+		List<M3UItem> UHDMovies = filterItems(playlist.getPlayList(), ofTypeDefinition(Constants.UHD));
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Starting createMovieFolders");
 		}
 		
 		deleteFolder(Constants.FOLDER_MOVIES);
-		String movieFolder = createFolder(Constants.FOLDER_MOVIES) + File.separator;
+		String movieFolder = createFolder(Constants.FOLDER_MOVIES + File.separator);
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Processing {} movies", movies.size());
+			logger.debug("Processing {} FHDMovies", FHDMovies.size());
+			logger.debug("Processing {} UHDMovies", UHDMovies.size());
 		}
 		
 		movies.forEach(movie -> {
-			String folder = movie.getName();
-			String url = movie.getUrl();
-			
-			boolean processLater = false;
-			if (folder.contains("FHD")) {
-				FHDMovies.add(movie);
-				processLater = true;
-			}
-			if (folder.contains("UHD")) {
-				UHDMovies.add(movie);
-				processLater = true;
-			}
-			
-			if (!processLater) {
+			if (!movie.getGroupTitle().contains(Constants.UHD) && !movie.getGroupTitle().contains(Constants.FHD)) {
+				String folder = movie.getName().trim();
+				folder = folder.replace("/", " ").trim();
+				String url = movie.getUrl();
+				
 				try {
 					
-					File newFolder = new File(movieFolder + folder.trim());
-					newFolder.mkdir();
-					File thisFile = new File(newFolder.getAbsolutePath() + File.separator + folder + ".strm"); 
+					String newFolder = folder.trim();
+					String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
+					File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
 					writeToFile(thisFile, url);
 				} catch (IOException ioe) {
 					ioe.getMessage();
 				}
 			}
-
 		});
 		
-		
-		
-		FHDMovies.forEach(FHDMovie -> {
-			String folder = FHDMovie.getName();
-			String url = FHDMovie.getUrl();
+		FHDMovies.forEach(movie -> {
+			String folder = movie.getName().trim();
+			folder = folder.replace("FHD", "").trim();
+			folder = folder.replace("/", " ").trim();
+			String url = movie.getUrl();
 			
-			String findOriginalfolder = folder.replaceAll("FHD", "").trim();
-			
-			if (findOriginalfolder != null) {
-				
-				File folderToReplace = new File(movieFolder + findOriginalfolder.trim());
-				if (folderToReplace.exists()) {
-					folderToReplace.delete();
-				}
-				
-			}
-			
-			File newFolder = new File(movieFolder + folder.trim());
-			newFolder.mkdir();
-			File thisFile = new File(newFolder.getAbsolutePath() + File.separator + folder + ".strm"); 
 			try {
+				
+				String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + folder);
+				File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
 				writeToFile(thisFile, url);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException ioe) {
+				ioe.getMessage();
 			}
 		});
 		
-		UHDMovies.forEach(UHDMovie -> {
-			String folder = UHDMovie.getName();
-			String url = UHDMovie.getUrl();
+		UHDMovies.forEach(movie -> {
+			String folder = movie.getName().trim();
+			folder = folder.replace("UHD", "").trim();
+			folder = folder.replace("/", " ").trim();
+			String url = movie.getUrl();
 			
-			String findOriginalfolder = folder.replaceAll("UHD", "").trim();
-			
-			if (findOriginalfolder != null) {
-				
-				File folderToReplace = new File(movieFolder + findOriginalfolder.trim());
-				if (folderToReplace.exists()) {
-					folderToReplace.delete();
-				}
-				
-			}
-			
-			File newFolder = new File(movieFolder + folder.trim());
-			newFolder.mkdir();
-			File thisFile = new File(newFolder.getAbsolutePath() + File.separator + folder + ".strm"); 
 			try {
+				
+				String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + folder);
+				File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
 				writeToFile(thisFile, url);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException ioe) {
+				ioe.getMessage();
 			}
 		});
-
+		
+		
+		
 	}
 
 	public static void createTVshowFolders (List<M3UItem> tvshows) {
@@ -257,7 +239,7 @@ public class M3UtoStrm {
 
 	public static void deleteFolder (String folder) {
 
-		Path pathToBeDeleted = new File(downloadProperties.getDownloadPath() + File.separator + folder).toPath();
+		Path pathToBeDeleted = new File(folder).toPath();
 
 		try {
 			if (pathToBeDeleted.toFile().exists()) {
@@ -276,9 +258,13 @@ public class M3UtoStrm {
 	public static String createFolder (String folder) {
 
 				
-		File newDirectory = new File(downloadProperties.getDownloadPath() + File.separator + folder);
+		File newDirectory = new File(baseDirectory + folder);
 
-		if (!newDirectory.exists()) newDirectory.mkdir();
+		if (newDirectory.exists()) {
+			deleteFolder(newDirectory.getAbsolutePath());
+		}
+		
+		newDirectory.mkdir();
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Created folder {}", newDirectory.getAbsolutePath());

@@ -38,4 +38,8 @@ public class Constants {
 	public static final String FOLDER_MOVIES = "Movies";
 	public static final String FOLDER_TVSHOWS = "TVshows";
 	
+	public static final String UHD = "UHD";
+	public static final String FHD = "FHD";
+	
+	
 }
