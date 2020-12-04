@@ -1,0 +1,14 @@
+server:
+  port: ${PORT:8090}
+
+spring:
+  mobile:
+    devicedelegatingviewresolver:
+      enabled: true
+      enable-fallback: true
+      mobile-prefix: mobile/
+      # mobile-suffix: .mob
+      normal-prefix: 
+      # normal-suffix: .nor
+      tablet-prefix: tablet/
+      # tablet-suffix: .tab
