@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -62,8 +61,16 @@ public class M3UtoStrm {
 
 		List<M3UItem> movies = filterItems(playlist.getPlayList(), ofType(Constants.MOVIE));
 		List<M3UItem> tvshows = filterItems(playlist.getPlayList(), ofType(Constants.TVSHOW));
+		List<M3UItem> FHDMovies = filterItems(movies, ofTypeDefinition(Constants.FHD));
+		List<M3UItem> UHDMovies = filterItems(movies, ofTypeDefinition(Constants.UHD));
 		
-		createMovieFolders(movies);
+		movies.removeAll(FHDMovies);
+		movies.removeAll(UHDMovies);
+		
+		createMovieFolders(movies, Constants.SD);
+		createMovieFolders(FHDMovies, Constants.FHD);
+		createMovieFolders(UHDMovies, Constants.UHD);
+		
 		createTVshowFolders(tvshows);
 	}
 
@@ -114,81 +121,20 @@ public class M3UtoStrm {
 		return items.stream().filter( predicate ).collect(Collectors.<M3UItem>toList());
 	}
 
-	public static void createMovieFolders (List<M3UItem> movies) {
+	public static void createMovieFolders (List<M3UItem> movies, String type) {
 
-		/*
-		 * Movies can be FHD, UHD or normal definition.
-		 * We want the UHD to be th final version.
-		 */
-		 
-		List<M3UItem> FHDMovies = filterItems(playlist.getPlayList(), ofTypeDefinition(Constants.FHD));
-		List<M3UItem> UHDMovies = filterItems(playlist.getPlayList(), ofTypeDefinition(Constants.UHD));
-		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Starting createMovieFolders");
 		}
 		
 		deleteFolder(Constants.FOLDER_MOVIES);
-		String movieFolder = createFolder(Constants.FOLDER_MOVIES + File.separator);
-		
+				
 		if (logger.isDebugEnabled()) {
 			logger.debug("Processing {} movies", movies.size());
-			logger.debug("Processing {} FHDMovies", FHDMovies.size());
-			logger.debug("Processing {} UHDMovies", UHDMovies.size());
 		}
 		
-		movies.forEach(movie -> {
-			if (!movie.getGroupTitle().contains(Constants.UHD) && !movie.getGroupTitle().contains(Constants.FHD)) {
-				String folder = movie.getName().trim();
-				folder = folder.replace("/", " ").trim();
-				String url = movie.getUrl();
+		makeMovieFolders(movies, type);
 				
-				try {
-					
-					String newFolder = folder.trim();
-					String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
-					File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
-					writeToFile(thisFile, url);
-				} catch (IOException ioe) {
-					ioe.getMessage();
-				}
-			}
-		});
-		
-		FHDMovies.forEach(movie -> {
-			String folder = movie.getName().trim();
-			folder = folder.replace("FHD", "").trim();
-			folder = folder.replace("/", " ").trim();
-			String url = movie.getUrl();
-			
-			try {
-				
-				String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + folder);
-				File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
-				writeToFile(thisFile, url);
-			} catch (IOException ioe) {
-				ioe.getMessage();
-			}
-		});
-		
-		UHDMovies.forEach(movie -> {
-			String folder = movie.getName().trim();
-			folder = folder.replace("UHD", "").trim();
-			folder = folder.replace("/", " ").trim();
-			String url = movie.getUrl();
-			
-			try {
-				
-				String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + folder);
-				File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
-				writeToFile(thisFile, url);
-			} catch (IOException ioe) {
-				ioe.getMessage();
-			}
-		});
-		
-		
-		
 	}
 
 	public static void createTVshowFolders (List<M3UItem> tvshows) {
@@ -286,4 +232,29 @@ public class M3UtoStrm {
 		writer.close();
 	}
 
+	public static void makeMovieFolders(List<M3UItem> movies, String type) {
+				
+		movies.forEach(movie -> {
+			
+			String folder = movie.getName().trim();
+			folder = folder.replace("/", " ").trim();
+			
+			String url = movie.getUrl();
+			
+			if (type.equals(Constants.FHD)) {
+				folder = folder.replace(Constants.FHD, "").trim();
+			} else if (type.equals(Constants.UHD)) {
+				folder = folder.replace(Constants.UHD, "").trim();
+			}
+			try {
+				String newFolder = folder;
+				String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
+				File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
+				writeToFile(thisFile, url);
+			} catch (IOException ioe) {
+				ioe.getMessage();
+			}
+		
+		});
+	}
 }

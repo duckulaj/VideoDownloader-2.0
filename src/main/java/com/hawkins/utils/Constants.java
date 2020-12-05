@@ -40,6 +40,7 @@ public class Constants {
 	
 	public static final String UHD = "UHD";
 	public static final String FHD = "FHD";
+	public static final String SD = "SD";
 	
 	
 }
