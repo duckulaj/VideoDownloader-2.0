@@ -67,6 +67,9 @@ public class M3UtoStrm {
 		movies.removeAll(FHDMovies);
 		movies.removeAll(UHDMovies);
 		
+		String movieFolder = createFolder(Constants.FOLDER_MOVIES) + File.separator;
+		
+		
 		createMovieFolders(movies, Constants.SD);
 		createMovieFolders(FHDMovies, Constants.FHD);
 		createMovieFolders(UHDMovies, Constants.UHD);
