@@ -13,7 +13,7 @@
 
 	<groupId>com.hawkins</groupId>
 	<artifactId>SpringVideoDownloader</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0.0-DEV</version>
 	<name>SpringVideoDownloader</name>
 	<description>Spring Boot Video Downloader</description>
 

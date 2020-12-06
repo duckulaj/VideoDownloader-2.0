@@ -68,7 +68,7 @@ public class M3UtoStrm {
 		movies.removeAll(UHDMovies);
 		
 		String movieFolder = createFolder(Constants.FOLDER_MOVIES) + File.separator;
-		
+		logger.info("Created {}", movieFolder);
 		
 		createMovieFolders(movies, Constants.SD);
 		createMovieFolders(FHDMovies, Constants.FHD);
@@ -130,7 +130,7 @@ public class M3UtoStrm {
 			logger.debug("Starting createMovieFolders");
 		}
 		
-		deleteFolder(Constants.FOLDER_MOVIES);
+		// deleteFolder(Constants.FOLDER_MOVIES);
 				
 		if (logger.isDebugEnabled()) {
 			logger.debug("Processing {} movies", movies.size());
