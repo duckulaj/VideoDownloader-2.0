@@ -20,7 +20,8 @@ public class DownloadListChannel{
 		DownloadEntry[] downloadListJsonArray;
 
 		try {
-		Gson gson = new GsonBuilder().create(); downloadListJsonArray = gson.fromJson(Files.newBufferedReader(file.toPath()),DownloadEntry[].class);
+		Gson gson = new GsonBuilder().create(); 
+		downloadListJsonArray = gson.fromJson(Files.newBufferedReader(file.toPath()),DownloadEntry[].class);
 
 		for (DownloadEntry ent : downloadListJsonArray) {
 
