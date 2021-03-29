@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.hawkins.m3u.M3UtoStrm;
 import com.hawkins.properties.DownloadProperties;
 import com.hawkins.utils.Utils;
 
@@ -32,5 +33,12 @@ public class ScheduledTasks {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Reloaded m3u file at {}", dateString);
 		}
+	}
+	
+	@Scheduled(cron = "0 2 1 * * ?") // 2.01am
+	public void createStreams() {
+		
+		M3UtoStrm.convertM3UtoStream();
+		logger.info("Scheduled Task createStreams() completed");
 	}
 }
