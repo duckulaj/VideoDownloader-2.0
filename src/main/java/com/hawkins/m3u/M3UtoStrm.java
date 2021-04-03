@@ -46,6 +46,7 @@ public class M3UtoStrm {
 		 * 7. Create a an strm file for each episode within a season
 		 */
 
+		logger.info("{} items in playlist", playlist.getPlayList().size());
 		playlist.getPlayList().forEach(item -> {
 			String groupTitle = item.getGroupTitle();
 			M3UGroup thisGroup = M3UParser.getGroupByName(groups, groupTitle);
@@ -60,9 +61,16 @@ public class M3UtoStrm {
 		});
 
 		List<M3UItem> movies = filterItems(playlist.getPlayList(), ofType(Constants.MOVIE));
+		logger.info("{} Movies", movies.size());
+		
 		List<M3UItem> tvshows = filterItems(playlist.getPlayList(), ofType(Constants.TVSHOW));
+		logger.info("{} TV Shows", tvshows.size());
+		
 		List<M3UItem> FHDMovies = filterItems(movies, ofTypeDefinition(Constants.FHD));
+		logger.info("{} FHD Movies", FHDMovies.size());
+		
 		List<M3UItem> UHDMovies = filterItems(movies, ofTypeDefinition(Constants.UHD));
+		logger.info("{} UHD Movies", UHDMovies.size());
 		
 		movies.removeAll(FHDMovies);
 		movies.removeAll(UHDMovies);
@@ -71,10 +79,16 @@ public class M3UtoStrm {
 		logger.info("Created {}", movieFolder);
 		
 		createMovieFolders(movies, Constants.SD);
+		logger.info("Created Movies folders");
+		
 		createMovieFolders(FHDMovies, Constants.FHD);
+		logger.info("Created FHD Movies folders");
+		
 		createMovieFolders(UHDMovies, Constants.UHD);
+		logger.info("Created UHD Movies folders");
 		
 		createTVshowFolders(tvshows);
+		logger.info("Created TV Shows folders");
 	}
 
 
