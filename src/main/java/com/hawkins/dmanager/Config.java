@@ -44,9 +44,9 @@ public class Config {
 	private String customCmd, antivirCmd, antivirExe;
 	private boolean firstRun;
 	private String language;
-	
-	private static DmProperties dmProperties = DmProperties.getInstance();
 
+	private DmProperties dmProperties;
+	
 	public String getLanguage() {
 		return language;
 	}
@@ -69,7 +69,7 @@ public class Config {
 
 	void load() {
 		
-		DmProperties dmProperties = DmProperties.getInstance();
+		dmProperties = DmProperties.getInstance();
 	}
 
 	private static Config _config;

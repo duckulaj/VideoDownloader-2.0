@@ -10,7 +10,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ import com.hawkins.m3u.M3UGroupList;
 import com.hawkins.m3u.M3UItem;
 import com.hawkins.m3u.M3UParser;
 import com.hawkins.m3u.M3UPlayList;
-import com.hawkins.m3u.M3UtoStrm;
 import com.hawkins.properties.DmProperties;
 import com.hawkins.properties.DownloadProperties;
 import com.hawkins.service.DownloadService;

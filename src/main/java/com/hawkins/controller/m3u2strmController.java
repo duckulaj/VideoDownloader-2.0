@@ -32,6 +32,8 @@ public class m3u2strmController {
 
 	@GetMapping("/convertToStream") public String convertM3UtoStream(Model model) {
 		
+		logger.info("Starting convertM3UtoStream()");
+		
 		M3UtoStrm.convertM3UtoStream();
 		
 		model.addAttribute(Constants.GROUPS, M3UParser.sortGrouplist(grouplist.getGroupList()));
