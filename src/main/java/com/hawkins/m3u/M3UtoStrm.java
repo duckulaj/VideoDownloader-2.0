@@ -28,8 +28,6 @@ public class M3UtoStrm {
 	private static String tvShowRegex = "[S]{1}[0-9]{2} [E]{1}[0-9]{2}";
 	private static String seasonRegex = "[S]{1}[0-9]{2}";
 	
-	private static M3UGroupList groups = M3UGroupList.getInstance();
-	private static M3UPlayList playlist = M3UPlayList.getInstance();
 	private static DownloadProperties downloadProperties = DownloadProperties.getInstance();
 	
 	private static String baseDirectory = downloadProperties.getDownloadPath() + File.separator;
@@ -45,6 +43,9 @@ public class M3UtoStrm {
 		 * 6. Create a subfolder for each Season
 		 * 7. Create a an strm file for each episode within a season
 		 */
+		
+		M3UGroupList groups = M3UGroupList.getInstance();
+		M3UPlayList playlist = M3UPlayList.getInstance();
 
 		logger.info("{} items in playlist", playlist.getPlayList().size());
 		playlist.getPlayList().forEach(item -> {
