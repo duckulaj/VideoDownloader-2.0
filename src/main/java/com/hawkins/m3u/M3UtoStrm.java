@@ -60,11 +60,13 @@ public class M3UtoStrm {
 				item.setGroupType(streamType);
 			}
 		});
+		
+		List<M3UItem> playlistItems = playlist.getPlayList();
 
-		List<M3UItem> movies = filterItems(playlist.getPlayList(), ofType(Constants.MOVIE));
+		List<M3UItem> movies = filterItems(playlistItems, ofType(Constants.MOVIE));
 		logger.info("{} Movies", movies.size());
 		
-		List<M3UItem> tvshows = filterItems(playlist.getPlayList(), ofType(Constants.TVSHOW));
+		List<M3UItem> tvshows = filterItems(playlistItems, ofType(Constants.TVSHOW));
 		logger.info("{} TV Shows", tvshows.size());
 		
 		List<M3UItem> FHDMovies = filterItems(movies, ofTypeDefinition(Constants.FHD));
