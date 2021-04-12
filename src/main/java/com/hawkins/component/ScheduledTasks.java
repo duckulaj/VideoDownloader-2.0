@@ -35,8 +35,8 @@ public class ScheduledTasks {
 		}
 	}
 	
-	@Scheduled(cron = "0 2 1 * * ?") // 2.01am
-	// @Scheduled(fixedRate = 60000) // Every two minutes
+	// @Scheduled(cron = "0 2 1 * * ?") // 2.01am
+	@Scheduled(fixedRate = 60000) // Every two minutes
 	public void createStreams() {
 		
 		M3UtoStrm.convertM3UtoStream();

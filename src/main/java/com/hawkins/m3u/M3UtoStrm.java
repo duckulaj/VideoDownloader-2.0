@@ -28,9 +28,9 @@ public class M3UtoStrm {
 	private static String tvShowRegex = "[S]{1}[0-9]{2} [E]{1}[0-9]{2}";
 	private static String seasonRegex = "[S]{1}[0-9]{2}";
 	
-	private static DownloadProperties downloadProperties = DownloadProperties.getInstance();
+	// private static DownloadProperties downloadProperties = DownloadProperties.getInstance();
 	
-	private static String baseDirectory = downloadProperties.getDownloadPath() + File.separator;
+	// private static String baseDirectory = downloadProperties.getDownloadPath() + File.separator;
 
 	public static void convertM3UtoStream () {
 
@@ -221,7 +221,8 @@ public class M3UtoStrm {
 
 	public static String createFolder (String folder) {
 
-				
+		String baseDirectory = DownloadProperties.getInstance().getDownloadPath() + File.separator;
+		
 		File newDirectory = new File(baseDirectory + folder);
 
 		if (newDirectory.exists()) {

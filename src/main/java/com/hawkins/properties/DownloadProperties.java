@@ -30,6 +30,8 @@ public class DownloadProperties implements Runnable {
 	private String movieDbAPI = null;
 	private String movieDbURL = null;
 	private String searchMovieURL = null;
+	private String resetM3UFileSchedule = null;
+	private String createStreamsSchedule = null;
 
 	public DownloadProperties() {
 
@@ -127,6 +129,22 @@ public class DownloadProperties implements Runnable {
 
 	public String getMovieDbAPI() {
 		return movieDbAPI;
+	}
+
+	public String getResetM3UFileSchedule() {
+		return resetM3UFileSchedule;
+	}
+
+	public void setResetM3UFileSchedule(String resetM3UFileSchedule) {
+		this.resetM3UFileSchedule = resetM3UFileSchedule;
+	}
+
+	public String getCreateStreamsSchedule() {
+		return createStreamsSchedule;
+	}
+
+	public void setCreateStreamsSchedule(String createStreamsSchedule) {
+		this.createStreamsSchedule = createStreamsSchedule;
 	}
 
 	public void setMovieDbAPI(String movieDbAPI) {
