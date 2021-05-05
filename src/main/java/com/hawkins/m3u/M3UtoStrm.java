@@ -28,10 +28,6 @@ public class M3UtoStrm {
 	private static String tvShowRegex = "[S]{1}[0-9]{2} [E]{1}[0-9]{2}";
 	private static String seasonRegex = "[S]{1}[0-9]{2}";
 	
-	// private static DownloadProperties downloadProperties = DownloadProperties.getInstance();
-	
-	// private static String baseDirectory = downloadProperties.getDownloadPath() + File.separator;
-
 	public static void convertM3UtoStream () {
 
 		/*
@@ -153,6 +149,7 @@ public class M3UtoStrm {
 			logger.debug("Processing {} movies", movies.size());
 		}
 		
+		logger.info("Processing {} movies of type {}", movies.size(),type);
 		makeMovieFolders(movies, type);
 				
 	}
@@ -169,6 +166,8 @@ public class M3UtoStrm {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Processing {} TV Shows", tvshows.size());
 		}
+		
+		logger.info("Processing {} TV Shows", tvshows.size());
 		
 		tvshows.forEach(tvShow -> {
 			String tvShowName = tvShow.getName();

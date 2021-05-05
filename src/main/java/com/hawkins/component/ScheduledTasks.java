@@ -35,10 +35,13 @@ public class ScheduledTasks {
 		}
 	}
 	
-	/*
-	 * @Scheduled(cron = "0 2 1 * * ?") // 2.01am public void createStreams() {
-	 * 
-	 * M3UtoStrm.convertM3UtoStream();
-	 * logger.info("Scheduled Task createStreams() completed"); }
-	 */
+	
+	  @Scheduled(cron = "0 2 1 * * ?") // 2.01am
+	  // @Scheduled(fixedRateString = "${createStreams.fixedRate.in.milliseconds}")
+	  public void createStreams() {
+	  
+		  M3UtoStrm.convertM3UtoStream();
+		  logger.info("Scheduled Task createStreams() completed");
+	  }
+	 
 }
