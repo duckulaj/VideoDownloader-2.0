@@ -148,15 +148,15 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		DownloadEntry ent = downloads.get(id);
 		ent.setState(DManagerConstants.FINISHED);
 		ent.setProgress(100);
-		Downloader d = downloaders.remove(id);
-		if (d != null && d.getSize() < 0) {
-			ent.setSize(d.getDownloaded());
+		Downloader downloader = downloaders.remove(id);
+		if (downloader != null && downloader.getSize() < 0) {
+			ent.setSize(downloader.getDownloaded());
 		}
 
 		FileUtils.copyToriginalFileName(ent);
 
-		if (d != null) {
-			d.sendProgress(id, ent, template);
+		if (downloader != null) {
+			downloader.sendProgress(id, ent, template);
 		}
 		notifyListeners(null);
 		saveDownloadList();
@@ -191,7 +191,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	}
 
 	public void downloadStopped(String id) {
-		Downloader d = downloaders.get(id);
+		Downloader downloader = downloaders.get(id);
 		downloaders.remove(id);
 		DownloadEntry ent = downloads.get(id);
 		ent.setState(DManagerConstants.PAUSED);
@@ -199,7 +199,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		saveDownloadList();
 		processNextItem(id);
 		loadDownloadList();
-		d.sendProgress(id, ent, this.template);
+		downloader.sendProgress(id, ent, this.template);
 	}
 
 	public void downloadConfirmed(String id) {
@@ -208,33 +208,33 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 			logger.debug("confirmed {}", id);
 		}
 		
-		Downloader d = downloaders.get(id);
+		Downloader downloader = downloaders.get(id);
 		DownloadEntry ent = downloads.get(id);
-		ent.setSize(d.getSize());
-		if (d.isFileNameChanged()) {
-			ent.setFile(d.getNewFile());
-			ent.setCategory(DManagerUtils.findCategory(d.getNewFile()));
+		ent.setSize(downloader.getSize());
+		if (downloader.isFileNameChanged()) {
+			ent.setFile(downloader.getNewFile());
+			ent.setCategory(DManagerUtils.findCategory(downloader.getNewFile()));
 			updateFileName(ent);
 		}
 		
 		notifyListeners(id);
 		saveDownloadList();
 		loadDownloadList();
-		d.sendProgress(id, ent, this.template);
+		downloader.sendProgress(id, ent, this.template);
 	}
 
 	public void downloadUpdated(String id) {
 		DownloadEntry ent = downloads.get(id);
-		Downloader d = downloaders.get(id);
-		if (d == null) {
+		Downloader downloader = downloaders.get(id);
+		if (downloader == null) {
 			logger.info("################# sync error ##############");
 		} else {
-			ent.setSize(d.getSize());
-			ent.setDownloaded(d.getDownloaded());
-			ent.setProgress(d.getProgress());
-			ent.setState(d.isAssembling() ? DManagerConstants.ASSEMBLING : DManagerConstants.DOWNLOADING);
-			ent.setDownloadSpeed(d.getDownloadSpeed());
-			ent.setEta(d.getEta());
+			ent.setSize(downloader.getSize());
+			ent.setDownloaded(downloader.getDownloaded());
+			ent.setProgress(downloader.getProgress());
+			ent.setState(downloader.isAssembling() ? DManagerConstants.ASSEMBLING : DManagerConstants.DOWNLOADING);
+			ent.setDownloadSpeed(downloader.getDownloadSpeed());
+			ent.setEta(downloader.getEta());
 		}
 		
 		notifyListeners(id);
@@ -245,8 +245,8 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 			lastSaved = now;
 		}
 		
-		if (d != null ) {
-			d.sendProgress(id, ent, this.template);
+		if (downloader != null ) {
+			downloader.sendProgress(id, ent, this.template);
 		}
 	}
 
@@ -321,7 +321,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				logger.debug("starting " + id + " with: " + metadata + " is dash: " + (metadata instanceof DashMetadata));
 			}
 			
-			Downloader d = null;
+			Downloader downloader = null;
 
 			if (metadata instanceof DashMetadata) {
 				logger.info("Dash download with stream: " + streams);
@@ -337,27 +337,27 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 
 					// create dash downloader
 					DashMetadata dm = (DashMetadata) metadata;
-					d = new DashDownloader(id, Config.getInstance().getTemporaryFolder(), dm);
+					downloader = new DashDownloader(id, Config.getInstance().getTemporaryFolder(), dm);
 				}
 			}
 			if (metadata instanceof HlsMetadata) {
 				logger.info("Hls download created");
-				d = new HlsDownloader(id, Config.getInstance().getTemporaryFolder(), (HlsMetadata) metadata);
+				downloader = new HlsDownloader(id, Config.getInstance().getTemporaryFolder(), (HlsMetadata) metadata);
 			}
 			if (metadata instanceof HdsMetadata) {
 				logger.info("Hls download created");
-				d = new HdsDownloader(id, Config.getInstance().getTemporaryFolder(), (HdsMetadata) metadata);
+				downloader = new HdsDownloader(id, Config.getInstance().getTemporaryFolder(), (HdsMetadata) metadata);
 			}
-			if (d == null) {
-				d = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
+			if (downloader == null) {
+				downloader = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
 			}
 
-			d.setOuputMediaFormat(ent.getOutputFormatIndex());
-			downloaders.put(id, d);
-			d.registerListener(this);
+			downloader.setOuputMediaFormat(ent.getOutputFormatIndex());
+			downloaders.put(id, downloader);
+			downloader.registerListener(this);
 			ent.setState(DManagerConstants.DOWNLOADING);
-			d.start();
-			d.sendProgress(id, ent, this.template);
+			downloader.start();
+			downloader.sendProgress(id, ent, this.template);
 			
 		} else {
 			logger.info(id + ": Maximum download limit reached, queueing request");
@@ -365,15 +365,15 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	}
 
 	public void pauseDownload(String id) {
-		Downloader d = downloaders.get(id);
-		if (d != null) {
+		Downloader downloader = downloaders.get(id);
+		if (downloader != null) {
 			DownloadEntry de = downloads.get(id);
 			if (de != null) {
 				de.setState(DManagerConstants.PAUSED);
 			}
-			d.stop();
-			d.sendProgress(id, de, this.template);
-			d.unregisterListener();
+			downloader.stop();
+			downloader.sendProgress(id, de, this.template);
+			downloader.unregisterListener();
 		}
 	}
 
@@ -390,30 +390,30 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 					 * wnd); wnd.setVisible(true);
 					 */
 				}
-				Downloader d = null;
+				Downloader downloader = null;
 				if (metadata instanceof DashMetadata) {
 					DashMetadata dm = (DashMetadata) metadata;
 					logger.info("Dash download- url1: " + dm.getUrl() + " url2: " + dm.getUrl2());
-					d = new DashDownloader(id, Config.getInstance().getTemporaryFolder(), dm);
+					downloader = new DashDownloader(id, Config.getInstance().getTemporaryFolder(), dm);
 				}
 				if (metadata instanceof HlsMetadata) {
 					HlsMetadata hm = (HlsMetadata) metadata;
 					logger.info("HLS download- url1: " + hm.getUrl());
-					d = new HlsDownloader(id, Config.getInstance().getTemporaryFolder(), hm);
+					downloader = new HlsDownloader(id, Config.getInstance().getTemporaryFolder(), hm);
 				}
 				if (metadata instanceof HdsMetadata) {
 					HdsMetadata hm = (HdsMetadata) metadata;
 					logger.info("HLS download- url1: " + hm.getUrl());
-					d = new HdsDownloader(id, Config.getInstance().getTemporaryFolder(), hm);
+					downloader = new HdsDownloader(id, Config.getInstance().getTemporaryFolder(), hm);
 				}
-				if (d == null) {
+				if (downloader == null) {
 					logger.info("normal download");
-					d = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
+					downloader = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
 				}
-				downloaders.put(id, d);
-				d.setOuputMediaFormat(ent.getOutputFormatIndex());
+				downloaders.put(id, downloader);
+				downloader.setOuputMediaFormat(ent.getOutputFormatIndex());
 				//d.registerListener(this);
-				d.resume();
+				downloader.resume();
 
 			} else {
 				logger.info("{}: Maximum download limit reached, queueing request", id);
