@@ -41,6 +41,8 @@ public class M3UtoStrm {
 		 */
 		
 		M3UGroupList groups = M3UGroupList.getInstance();
+		groups.resetGroupList();
+		
 		M3UPlayList playlist = M3UPlayList.getInstance();
 
 		logger.info("{} items in playlist", playlist.getPlayList().size());
