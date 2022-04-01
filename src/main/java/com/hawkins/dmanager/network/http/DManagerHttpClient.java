@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.jmx.access.InvalidInvocationException;
 
 import com.hawkins.dmanager.network.FixedRangeInputStream;
 import com.hawkins.dmanager.network.HostUnreachableException;
@@ -20,9 +15,11 @@ import com.hawkins.dmanager.network.SocketFactory;
 import com.hawkins.dmanager.util.NetUtils;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DManagerHttpClient extends HttpClient {
 	
-	private static final Logger logger = LogManager.getLogger(DManagerHttpClient.class.getName());
 
 	private ParsedURL _url;
 	private Socket socket;
@@ -80,14 +77,14 @@ public class DManagerHttpClient extends HttpClient {
 			Socket sock = KeepAliveConnectionCache.getInstance().getReusableSocket(_url.getHost(), _url.getPort());
 			boolean reusing = false;
 			if (sock == null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Creating new socket");
+				if (log.isDebugEnabled()) {
+					log.debug("Creating new socket");
 				}
 				this.socket = createSocket();
 			} else {
 				reusing = true;
-				if (logger.isDebugEnabled()) {
-					logger.debug("Reusing existing socket");
+				if (log.isDebugEnabled()) {
+					log.debug("Reusing existing socket");
 				}
 				this.socket = sock;
 			}
@@ -99,8 +96,8 @@ public class DManagerHttpClient extends HttpClient {
 			requestHeaders.appendToBuffer(reqBuf);
 			reqBuf.append("\r\n");
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("Sending request:\n {}", reqBuf);
+			if (log.isDebugEnabled()) {
+				log.debug("Sending request:\n {}", reqBuf);
 			}
 			
 			sockOut.write(StringUtils.getBytes(reqBuf));
@@ -115,28 +112,28 @@ public class DManagerHttpClient extends HttpClient {
 				String message = nfe.getMessage();
 				
 				if (StandardCharsets.US_ASCII.newEncoder().canEncode(message)) {
-					if (logger.isDebugEnabled()) {
-						logger.debug(message);
+					if (log.isDebugEnabled()) {
+						log.debug(message);
 					}
 				} else {
-					if (logger.isDebugEnabled()) {
-						logger.debug("message contains printable characters encountered");
+					if (log.isDebugEnabled()) {
+						log.debug("message contains printable characters encountered");
 					}
 				}
-				if (logger.isDebugEnabled()) {
-					logger.debug("Old status code of {} being set to 0", this.statusCode);
+				if (log.isDebugEnabled()) {
+					log.debug("Old status code of {} being set to 0", this.statusCode);
 				}
 				this.statusCode = 0;
 			} catch (ArrayIndexOutOfBoundsException aiobe) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(aiobe.getMessage());
-					logger.debug("Old status code of {} being set to 0", this.statusCode);
+				if (log.isDebugEnabled()) {
+					log.debug(aiobe.getMessage());
+					log.debug("Old status code of {} being set to 0", this.statusCode);
 				}
 				this.statusCode = 0;
 			} catch(Exception e) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(e.getMessage());
-					logger.debug("Old status code of {} being set to 0", this.statusCode);
+				if (log.isDebugEnabled()) {
+					log.debug(e.getMessage());
+					log.debug("Old status code of {} being set to 0", this.statusCode);
 				}
 				this.statusCode = 0;
 			}
@@ -148,12 +145,12 @@ public class DManagerHttpClient extends HttpClient {
 			}
 
 			if (StandardCharsets.US_ASCII.newEncoder().canEncode(statusLine)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(statusLine);
+				if (log.isDebugEnabled()) {
+					log.debug(statusLine);
 				}
 			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("statusLine contains printable characters encountered");
+				if (log.isDebugEnabled()) {
+					log.debug("statusLine contains printable characters encountered");
 				}
 			}
 
@@ -165,39 +162,39 @@ public class DManagerHttpClient extends HttpClient {
 			StringBuilder b2 = new StringBuilder();
 			responseHeaders.appendToBuffer(b2);
 			if (reusing) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Socket reuse successfull");
+				if (log.isDebugEnabled()) {
+					log.debug("Socket reuse successfull");
 				}
 			}
 			
 			if (StandardCharsets.US_ASCII.newEncoder().canEncode(b2)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(b2);
+				if (log.isDebugEnabled()) {
+					log.debug(b2.toString());
 				}
 			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("b2 contains non-printable characters");
+				if (log.isDebugEnabled()) {
+					log.debug("b2 contains non-printable characters");
 				}
 			}
 
 			keepAliveSupported = !"close".equals(responseHeaders.getValue("connection"));
 
 		} catch (HostUnreachableException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(e);
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 			throw new NetworkException("Unable to connect to server");
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(e);
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 			throw new NetworkException(e.getMessage());
 		}
 	}
 
 	private void releaseSocket() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Releasing socket for reuse");
+		if (log.isDebugEnabled()) {
+			log.debug("Releasing socket for reuse");
 		}
 		KeepAliveConnectionCache.getInstance().putSocket(socket, _url.getHost(), _url.getPort());
 	}

@@ -1,7 +1,5 @@
 package com.hawkins.controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +14,13 @@ import com.hawkins.properties.DownloadProperties;
 import com.hawkins.utils.Constants;
 import com.hawkins.utils.MovieDb;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class m3u2strmController {
 
-	private static final Logger logger = LogManager.getLogger(m3u2strmController.class.getName());
-	
+		
 	DownloadProperties downloadProperties = DownloadProperties.getInstance();
 	DmProperties dmProperties = DmProperties.getInstance();
 	M3UGroupList grouplist = M3UGroupList.getInstance();
@@ -32,7 +32,7 @@ public class m3u2strmController {
 
 	@GetMapping("/convertToStream") public String convertM3UtoStream(Model model) {
 		
-		logger.info("Starting convertM3UtoStream()");
+		log.info("Starting convertM3UtoStream()");
 		
 		M3UtoStrm.convertM3UtoStream();
 		

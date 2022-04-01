@@ -13,16 +13,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.properties.DownloadProperties;
 import com.hawkins.utils.Constants;
 import com.hawkins.utils.Utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class M3UtoStrm {
 
-	private static final Logger logger = LogManager.getLogger(M3UtoStrm.class.getName());
 
 	private static String[] videoTypes = {Constants.AVI, Constants.MKV, Constants.MP4};
 	private static String tvShowRegex = "[S]{1}[0-9]{2} [E]{1}[0-9]{2}";
@@ -45,7 +44,7 @@ public class M3UtoStrm {
 		
 		M3UPlayList playlist = M3UPlayList.getInstance();
 
-		logger.info("{} items in playlist", playlist.getPlayList().size());
+		log.info("{} items in playlist", playlist.getPlayList().size());
 		playlist.getPlayList().forEach(item -> {
 			String groupTitle = item.getGroupTitle();
 			M3UGroup thisGroup = M3UParser.getGroupByName(groups, groupTitle);
@@ -62,34 +61,34 @@ public class M3UtoStrm {
 		List<M3UItem> playlistItems = playlist.getPlayList();
 
 		List<M3UItem> movies = filterItems(playlistItems, ofType(Constants.MOVIE));
-		logger.info("{} Movies", movies.size());
+		log.info("{} Movies", movies.size());
 		
 		List<M3UItem> tvshows = filterItems(playlistItems, ofType(Constants.TVSHOW));
-		logger.info("{} TV Shows", tvshows.size());
+		log.info("{} TV Shows", tvshows.size());
 		
 		List<M3UItem> FHDMovies = filterItems(movies, ofTypeDefinition(Constants.FHD));
-		logger.info("{} FHD Movies", FHDMovies.size());
+		log.info("{} FHD Movies", FHDMovies.size());
 		
 		List<M3UItem> UHDMovies = filterItems(movies, ofTypeDefinition(Constants.UHD));
-		logger.info("{} UHD Movies", UHDMovies.size());
+		log.info("{} UHD Movies", UHDMovies.size());
 		
 		movies.removeAll(FHDMovies);
 		movies.removeAll(UHDMovies);
 		
 		String movieFolder = createFolder(Constants.FOLDER_MOVIES) + File.separator;
-		logger.info("Created {}", movieFolder);
+		log.info("Created {}", movieFolder);
 		
 		createMovieFolders(movies, Constants.SD);
-		logger.info("Created Movies folders");
+		log.info("Created Movies folders");
 		
 		createMovieFolders(FHDMovies, Constants.FHD);
-		logger.info("Created FHD Movies folders");
+		log.info("Created FHD Movies folders");
 		
 		createMovieFolders(UHDMovies, Constants.UHD);
-		logger.info("Created UHD Movies folders");
+		log.info("Created UHD Movies folders");
 		
 		createTVshowFolders(tvshows);
-		logger.info("Created TV Shows folders");
+		log.info("Created TV Shows folders");
 	}
 
 
@@ -141,35 +140,35 @@ public class M3UtoStrm {
 
 	public static void createMovieFolders (List<M3UItem> movies, String type) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Starting createMovieFolders");
+		if (log.isDebugEnabled()) {
+			log.debug("Starting createMovieFolders");
 		}
 		
 		// deleteFolder(Constants.FOLDER_MOVIES);
 				
-		if (logger.isDebugEnabled()) {
-			logger.debug("Processing {} movies", movies.size());
+		if (log.isDebugEnabled()) {
+			log.debug("Processing {} movies", movies.size());
 		}
 		
-		logger.info("Processing {} movies of type {}", movies.size(),type);
+		log.info("Processing {} movies of type {}", movies.size(),type);
 		makeMovieFolders(movies, type);
 				
 	}
 
 	public static void createTVshowFolders (List<M3UItem> tvshows) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Starting createMovieFolders");
+		if (log.isDebugEnabled()) {
+			log.debug("Starting createMovieFolders");
 		}
 		
 		deleteFolder(Constants.FOLDER_TVSHOWS);
 		String tvShowFolder = createFolder(Constants.FOLDER_TVSHOWS) + File.separator;
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Processing {} TV Shows", tvshows.size());
+		if (log.isDebugEnabled()) {
+			log.debug("Processing {} TV Shows", tvshows.size());
 		}
 		
-		logger.info("Processing {} TV Shows", tvshows.size());
+		log.info("Processing {} TV Shows", tvshows.size());
 		
 		tvshows.forEach(tvShow -> {
 			String tvShowName = tvShow.getName();
@@ -234,8 +233,8 @@ public class M3UtoStrm {
 		
 		newDirectory.mkdir();
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Created folder {}", newDirectory.getAbsolutePath());
+		if (log.isDebugEnabled()) {
+			log.debug("Created folder {}", newDirectory.getAbsolutePath());
 		}
 
 		return newDirectory.getAbsolutePath();
@@ -244,8 +243,8 @@ public class M3UtoStrm {
 
 	public static void writeToFile(File thisFile, String content) throws IOException{
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Writing file {}", thisFile.getAbsolutePath());
+		if (log.isDebugEnabled()) {
+			log.debug("Writing file {}", thisFile.getAbsolutePath());
 		}
 		
 		FileWriter writer = new FileWriter(thisFile);

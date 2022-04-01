@@ -1,13 +1,12 @@
 package com.hawkins.dmanager.downloaders.metadata;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HdsMetadata extends HttpMetadata {
 	
-	private static final Logger logger = LogManager.getLogger(HdsMetadata.class.getName());
 
 	private int bitRate;
 
@@ -42,7 +41,7 @@ public class HdsMetadata extends HttpMetadata {
 
 	@Override
 	public HttpMetadata derive() {
-		logger.info("derive hds metadata");
+		log.info("derive hds metadata");
 		HdsMetadata md = new HdsMetadata();
 		md.setHeaders(this.getHeaders());
 		md.setUrl(this.getUrl());

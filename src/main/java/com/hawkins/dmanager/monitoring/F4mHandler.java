@@ -6,18 +6,17 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.HdsMetadata;
 import com.hawkins.dmanager.downloaders.metadata.manifests.F4MManifest;
-import com.hawkins.dmanager.util.StringUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class F4mHandler {
 	
-	private static final Logger logger = LogManager.getLogger(F4mHandler.class.getName());
 
 	public static boolean handle(File f4mfile, ParsedHookData data) {
 		try {
@@ -32,21 +31,21 @@ public class F4mHandler {
 				buf.append(ln + "\n");
 			}
 			in.close();
-			logger.info("HDS manifest validating...");
+			log.info("HDS manifest validating...");
 			if (buf.indexOf("http://ns.adobe.com/f4m/1.0") < 0) {
-				logger.info("No namespace");
+				log.info("No namespace");
 				return false;
 			}
 			if (buf.indexOf("manifest") < 0) {
-				logger.info("No manifest keyword");
+				log.info("No manifest keyword");
 				return false;
 			}
 			if (buf.indexOf("drmAdditional") > 0) {
-				logger.info("DRM");
+				log.info("DRM");
 				return false;
 			}
 			if (buf.indexOf("media") == 0 || buf.indexOf("href") > 0 || buf.indexOf(".f4m") > 0) {
-				logger.info("Not a valid manifest");
+				log.info("Not a valid manifest");
 				return false;
 			}
 
@@ -65,7 +64,7 @@ public class F4mHandler {
 			}
 			return true;
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			return false;
 		}
 	}

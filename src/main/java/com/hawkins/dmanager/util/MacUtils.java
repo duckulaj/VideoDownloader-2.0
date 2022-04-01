@@ -5,12 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MacUtils {
 	
-	private static final Logger logger = LogManager.getLogger(MacUtils.class.getName());
 
 	public static void open(final File f) throws FileNotFoundException {
 		if (!f.exists()) {
@@ -23,7 +22,7 @@ public class MacUtils {
 				throw new FileNotFoundException();
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -34,19 +33,19 @@ public class MacUtils {
 		}
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
-			logger.info("Opening folder: " + f.getAbsolutePath());
+			log.info("Opening folder: " + f.getAbsolutePath());
 			pb.command("open", "-R", f.getAbsolutePath());
 			if(pb.start().waitFor()!=0) {
 				throw new FileNotFoundException();
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		// try {
 		// Runtime.getRuntime().exec(new String[] { "open -R \"" + f.getAbsolutePath() +
 		// "\"" });
 		// } catch (Exception e) {
-		// logger.info(e);
+		// log.info(e.getMessage());
 		// }
 	}
 
@@ -60,7 +59,7 @@ public class MacUtils {
 			//Runtime.getRuntime().exec(new String[] { "open \"" + app + "\" " + args });
 			return true;
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			return false;
 		}
 	}
@@ -69,7 +68,7 @@ public class MacUtils {
 		try {
 			Runtime.getRuntime().exec("caffeinate -i -t 3");
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -82,7 +81,7 @@ public class MacUtils {
 			fs = new FileOutputStream(f);
 			fs.write(getStartupPlist().getBytes());
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				if (fs != null)
@@ -105,7 +104,7 @@ public class MacUtils {
 				return false;
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				if (in != null)
@@ -154,7 +153,7 @@ public class MacUtils {
 			pb.command("open", url);
 			pb.start();// .waitFor();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 }

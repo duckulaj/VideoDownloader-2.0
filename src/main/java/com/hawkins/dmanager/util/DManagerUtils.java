@@ -8,18 +8,16 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.SpringVideoDownloadApplication;
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerConstants;
 
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 public class DManagerUtils {
 	
-	private static final Logger logger = LogManager.getLogger(DManagerUtils.class.getName());
 
 	private static final char[] invalid_chars = { '/', '\\', '"', '?', '*', '<', '>', ':', '|' };
 
@@ -66,7 +64,7 @@ public class DManagerUtils {
 				return "FILE";
 			return createSafeFileName(path);
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			return "FILE";
 		}
 	}
@@ -201,10 +199,10 @@ public class DManagerUtils {
 
 	public static boolean exec(String args) {
 		try {
-			logger.info("Launching: " + args);
+			log.info("Launching: " + args);
 			Runtime.getRuntime().exec(args);
 		} catch (IOException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			return false;
 		}
 		return true;
@@ -228,7 +226,7 @@ public class DManagerUtils {
 				MacUtils.keepAwakePing();
 			}
 		} catch (Throwable e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -244,7 +242,7 @@ public class DManagerUtils {
 			}
 			return false;
 		} catch (Throwable e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		return false;
 	}
@@ -260,7 +258,7 @@ public class DManagerUtils {
 				MacUtils.addToStartup();
 			}
 		} catch (Throwable e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 

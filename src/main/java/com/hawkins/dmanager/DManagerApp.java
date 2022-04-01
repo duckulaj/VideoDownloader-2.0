@@ -16,8 +16,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.google.gson.Gson;
@@ -36,16 +34,18 @@ import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
 import com.hawkins.dmanager.monitoring.BrowserMonitor;
 import com.hawkins.dmanager.network.http.HttpContext;
 import com.hawkins.dmanager.ui.res.StringResource;
+import com.hawkins.dmanager.util.DManagerUtils;
 import com.hawkins.dmanager.util.LinuxUtils;
 import com.hawkins.dmanager.util.ParamUtils;
 import com.hawkins.dmanager.util.StringUtils;
-import com.hawkins.dmanager.util.DManagerUtils;
 import com.hawkins.utils.FileUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DManagerApp implements DownloadListener, DownloadWindowListener, Comparator<String> {
 
-	private static final Logger logger = LogManager.getLogger(DManagerApp.class.getName());
-
+	
 	public static final String APP_VERSION = "0.0.1";
 
 	private ArrayList<ListChangeListener> listChangeListeners;
@@ -71,7 +71,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	private SimpMessagingTemplate template;
 	
 	public static void instanceStarted() {
-		logger.info("instance starting...");
+		log.info("instance starting...");
 		final DManagerApp app = DManagerApp.getInstance();
 		EventQueue.invokeLater(new Runnable() {
 			@Override
@@ -88,12 +88,12 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				DManagerUtils.addToStartup();
 			}
 		}
-		logger.info("instance started.");
+		log.info("instance started.");
 		
 	}
 
 	public static void instanceAlreadyRunning() {
-		logger.info("instance already runninng");
+		log.info("instance already runninng");
 		ParamUtils.sendParam(paramMap);
 		System.exit(0);
 	}
@@ -118,7 +118,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				expect = false;
 			}
 		}
-		logger.info("starting monitoring...");
+		log.info("starting monitoring...");
 		BrowserMonitor.getInstance().startMonitoring();
 	}
 
@@ -178,7 +178,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	public void downloadFailed(String id) {
 		downloaders.remove(id);
 		if (id == null) {
-			logger.info("Download failed, id null");
+			log.info("Download failed, id null");
 			return;
 		}
 
@@ -186,7 +186,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		ent.setState(DManagerConstants.FAILED);
 		notifyListeners(id);
 		saveDownloadList();
-		logger.info("DownloadEntry with id {} removed", ent.getId());
+		log.info("DownloadEntry with id {} removed", ent.getId());
 		processNextItem(id);
 	}
 
@@ -204,8 +204,8 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 
 	public void downloadConfirmed(String id) {
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("confirmed {}", id);
+		if (log.isDebugEnabled()) {
+			log.debug("confirmed {}", id);
 		}
 		
 		Downloader downloader = downloaders.get(id);
@@ -227,7 +227,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		DownloadEntry ent = downloads.get(id);
 		Downloader downloader = downloaders.get(id);
 		if (downloader == null) {
-			logger.info("################# sync error ##############");
+			log.info("################# sync error ##############");
 		} else {
 			ent.setSize(downloader.getSize());
 			ent.setDownloaded(downloader.getDownloaded());
@@ -303,7 +303,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		if (!now) {
 			DownloadQueue q = qMgr.getQueueById(queueId);
 			if (q != null && q.isRunning()) {
-				logger.info("Queue is running, if no pending download pickup next available download");
+				log.info("Queue is running, if no pending download pickup next available download");
 				q.next();
 			}
 		}
@@ -317,14 +317,14 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	private void startDownload(String id, HttpMetadata metadata, DownloadEntry ent, int streams, SimpMessagingTemplate template) {
 		if (!checkAndBufferRequests(id)) {
 			
-			if (logger.isDebugEnabled()) {
-				logger.debug("starting " + id + " with: " + metadata + " is dash: " + (metadata instanceof DashMetadata));
+			if (log.isDebugEnabled()) {
+				log.debug("starting " + id + " with: " + metadata + " is dash: " + (metadata instanceof DashMetadata));
 			}
 			
 			Downloader downloader = null;
 
 			if (metadata instanceof DashMetadata) {
-				logger.info("Dash download with stream: " + streams);
+				log.info("Dash download with stream: " + streams);
 				if (streams == 1) {
 					DashMetadata dm = (DashMetadata) metadata;
 					dm.setUrl(dm.getUrl2());// set video url as main url
@@ -333,7 +333,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 					DashMetadata dm = (DashMetadata) metadata;
 					dm.setUrl2(null);
 				} else {
-					logger.info("Dash download created");
+					log.info("Dash download created");
 
 					// create dash downloader
 					DashMetadata dm = (DashMetadata) metadata;
@@ -341,11 +341,11 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				}
 			}
 			if (metadata instanceof HlsMetadata) {
-				logger.info("Hls download created");
+				log.info("Hls download created");
 				downloader = new HlsDownloader(id, Config.getInstance().getTemporaryFolder(), (HlsMetadata) metadata);
 			}
 			if (metadata instanceof HdsMetadata) {
-				logger.info("Hls download created");
+				log.info("Hls download created");
 				downloader = new HdsDownloader(id, Config.getInstance().getTemporaryFolder(), (HdsMetadata) metadata);
 			}
 			if (downloader == null) {
@@ -360,7 +360,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 			downloader.sendProgress(id, ent, this.template);
 			
 		} else {
-			logger.info(id + ": Maximum download limit reached, queueing request");
+			log.info(id + ": Maximum download limit reached, queueing request");
 		}
 	}
 
@@ -393,21 +393,21 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				Downloader downloader = null;
 				if (metadata instanceof DashMetadata) {
 					DashMetadata dm = (DashMetadata) metadata;
-					logger.info("Dash download- url1: " + dm.getUrl() + " url2: " + dm.getUrl2());
+					log.info("Dash download- url1: " + dm.getUrl() + " url2: " + dm.getUrl2());
 					downloader = new DashDownloader(id, Config.getInstance().getTemporaryFolder(), dm);
 				}
 				if (metadata instanceof HlsMetadata) {
 					HlsMetadata hm = (HlsMetadata) metadata;
-					logger.info("HLS download- url1: " + hm.getUrl());
+					log.info("HLS download- url1: " + hm.getUrl());
 					downloader = new HlsDownloader(id, Config.getInstance().getTemporaryFolder(), hm);
 				}
 				if (metadata instanceof HdsMetadata) {
 					HdsMetadata hm = (HdsMetadata) metadata;
-					logger.info("HLS download- url1: " + hm.getUrl());
+					log.info("HLS download- url1: " + hm.getUrl());
 					downloader = new HdsDownloader(id, Config.getInstance().getTemporaryFolder(), hm);
 				}
 				if (downloader == null) {
-					logger.info("normal download");
+					log.info("normal download");
 					downloader = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
 				}
 				downloaders.put(id, downloader);
@@ -416,7 +416,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				downloader.resume();
 
 			} else {
-				logger.info("{}: Maximum download limit reached, queueing request", id);
+				log.info("{}: Maximum download limit reached, queueing request", id);
 			}
 			notifyListeners(null);
 		}
@@ -520,7 +520,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 			saveDownloadList(); // showDownloadsListProgress();
 
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 
 	}
@@ -561,9 +561,9 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 
 			}
 			
-			if (logger.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				logger.debug(gson.toJson(downloadListJsonArray));
+				log.debug(gson.toJson(downloadListJsonArray));
 			}
 			
 			FileWriter jsonFile = new FileWriter(new File(Config.getInstance().getDataFolder(), "downloads.json"));
@@ -572,7 +572,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 
 
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -600,7 +600,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	private synchronized boolean checkAndBufferRequests(String id) {
 		int actCount = getActiveDownloadCount();
 		if (Config.getInstance().getMaxDownloads() > 0 && actCount >= Config.getInstance().getMaxDownloads()) {
-			logger.info("active: " + actCount + " max: " + Config.getInstance().getMaxDownloads());
+			log.info("active: " + actCount + " max: " + Config.getInstance().getMaxDownloads());
 			if (!pendingDownloads.contains(id)) {
 				pendingDownloads.add(id);
 			}
@@ -677,12 +677,12 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		DownloadQueue q = getQueueById(queueId);
 		String id = ent.getId();
 		if (q == null) {
-			logger.info("No queue found for: '" + queueId + "'");
+			log.info("No queue found for: '" + queueId + "'");
 			return;
 		}
 		String qid = ent.getQueueId();
 		DownloadQueue oldQ = getQueueById(qid);
-		logger.debug("Adding to: '" + queueId + "'");
+		log.debug("Adding to: '" + queueId + "'");
 		if (!q.getQueueId().equals(qid)) {
 			if (oldQ != null) {
 				// remove from previous queue
@@ -734,7 +734,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		if (DManagerUtils.detectOS() == DManagerUtils.LINUX) {
 			LinuxUtils.initShutdown();
 		}
-		logger.info("Initiating shutdown");
+		log.info("Initiating shutdown");
 	}
 
 	/*
@@ -751,14 +751,14 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	 */
 
 	/*
-	 * private void deleteFiles(String id) { logger.info("Deleting metadata for " +
+	 * private void deleteFiles(String id) { log.info("Deleting metadata for " +
 	 * id); File mf = new File(Config.getInstance().getMetadataFolder(), id);
-	 * boolean deleted = mf.delete(); logger.info("Deleted manifest " + id + " " +
+	 * boolean deleted = mf.delete(); log.info("Deleted manifest " + id + " " +
 	 * deleted); File df = new File(Config.getInstance().getTemporaryFolder(), id);
 	 * File[] files = df.listFiles(); if (files != null && files.length > 0) { for
-	 * (File f : files) { deleted = f.delete(); logger.info("Deleted tmp file " + id
+	 * (File f : files) { deleted = f.delete(); log.info("Deleted tmp file " + id
 	 * + " " + deleted); } } deleted = df.delete();
-	 * logger.info("Deleted tmp folder " + id + " " + deleted); }
+	 * log.info("Deleted tmp folder " + id + " " + deleted); }
 	 */
 
 	/*
@@ -794,7 +794,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 				Config.getInstance().setProxyPass(new String(pauth.getPassword()));
 			}
 		} else {
-			logger.info("saving password for: " + msg);
+			log.info("saving password for: " + msg);
 			CredentialManager.getInstance().addCredentialForHost(msg, pauth);
 		}
 		return true;
@@ -834,7 +834,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	}
 
 	private void updateFileName(DownloadEntry ent) {
-		logger.info("checking for same named file on disk...");
+		log.info("checking for same named file on disk...");
 		String id = ent.getId();
 		File f = new File(getOutputFolder(id), ent.getFile());
 		
@@ -850,7 +850,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		}
 		
 		if (ent.getFile() != f.getName()) {
-			logger.info("Updating file name - old: " + ent.getFile() + " new: " + f.getName());
+			log.info("Updating file name - old: " + ent.getFile() + " new: " + f.getName());
 			ent.setFile(f.getName());
 		}
 	}

@@ -8,15 +8,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import com.hawkins.utils.Utils;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class M3UParser {
-	private static final Logger logger = LogManager.getLogger(M3UParser.class.getName());
 	
 	private M3UParser() {
 		
@@ -40,7 +37,7 @@ public class M3UParser {
 						channel.setLogo(valuesInQuotes[2]);
 						
 						if (valuesInQuotes[3].equalsIgnoreCase("#menu-collapse")) {
-							logger.debug("bollox");
+							log.debug("bollox");
 						}
 						channel.setGroupTitle(valuesInQuotes[3]);
 						channel.setUrl(br.readLine());
@@ -49,20 +46,20 @@ public class M3UParser {
 		
 					}
 				} catch (ArrayIndexOutOfBoundsException ae) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("line is {}", line);
-						logger.debug("valuesInQuotes[3] is invalid");
+					if (log.isDebugEnabled()) {
+						log.debug("line is {}", line);
+						log.debug("valuesInQuotes[3] is invalid");
 					}
 				}
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(e.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 		}
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("getAllM3uListFromFile executed in {} ms", (System.currentTimeMillis() - start));
+		if (log.isDebugEnabled()) {
+			log.debug("getAllM3uListFromFile executed in {} ms", (System.currentTimeMillis() - start));
 		}
 		return m3uList;
 	}
@@ -77,8 +74,8 @@ public class M3UParser {
 			String line;
 			while ((line = br.readLine()) != null) {
 				
-				if (logger.isDebugEnabled()) {
-					logger.debug("line is {}", line);
+				if (log.isDebugEnabled()) {
+					log.debug("line is {}", line);
 				}
 				
 				String[] valuesInQuotes = StringUtils.substringsBetween(line, "\"", "\"");
@@ -92,12 +89,12 @@ public class M3UParser {
 						// Have surrounded this with a try....catch in case the line is malformed
 						
 						if (valuesInQuotes[3].equalsIgnoreCase("modal")) {
-							logger.debug("bollox");
+							log.debug("bollox");
 						} else {
 							group.setName(valuesInQuotes[3]);
 							
-							if (logger.isDebugEnabled()) {
-								logger.debug("groupName is {}", group.getName());
+							if (log.isDebugEnabled()) {
+								log.debug("groupName is {}", group.getName());
 							}
 	
 							if (m3uGroupList.isEmpty()) {
@@ -115,9 +112,9 @@ public class M3UParser {
 							}
 						}
 					} catch (ArrayIndexOutOfBoundsException ae) {
-						if (logger.isDebugEnabled()) {
-							logger.debug("line is {}", line);
-							logger.debug("valuesInQuotes[3] is invalid");
+						if (log.isDebugEnabled()) {
+							log.debug("line is {}", line);
+							log.debug("valuesInQuotes[3] is invalid");
 						}
 					}
 					
@@ -125,16 +122,16 @@ public class M3UParser {
 				}
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(e.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 		}
 
 		List<M3UGroup> sortedGroups = sortGrouplist(m3uGroupList);
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Found {} groups", m3uGroupList.size());
-			logger.debug("getM3uGroupsFromFile executed in {} ms", (System.currentTimeMillis() - start));
+		if (log.isDebugEnabled()) {
+			log.debug("Found {} groups", m3uGroupList.size());
+			log.debug("getM3uGroupsFromFile executed in {} ms", (System.currentTimeMillis() - start));
 		}
 		
 		return sortGrouplist(sortedGroups);

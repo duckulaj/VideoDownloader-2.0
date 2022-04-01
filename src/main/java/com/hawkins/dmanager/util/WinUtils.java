@@ -5,14 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.win32.NativeMethods;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class WinUtils {
 	
-	private static final Logger logger = LogManager.getLogger(WinUtils.class.getName());
 
 	public static void open(File f) throws FileNotFoundException {
 		if (!f.exists()) {
@@ -27,7 +26,7 @@ public class WinUtils {
 			builder.command(lst);
 			builder.start();
 		} catch (IOException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -45,7 +44,7 @@ public class WinUtils {
 			builder.command(lst);
 			builder.start();
 		} catch (IOException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -56,14 +55,14 @@ public class WinUtils {
 	public static void addToStartup() {
 		String launchCmd = "\"" + System.getProperty("java.home") + "\\bin\\javaw.exe\" -jar \""
 				+ DManagerUtils.getJarFile().getAbsolutePath() + "\" -m";
-		logger.info("Launch CMD: " + launchCmd);
+		log.info("Launch CMD: " + launchCmd);
 		NativeMethods.getInstance().addToStartup("DManager", launchCmd);
 	}
 
 	public static boolean isAlreadyAutoStart() {
 		String launchCmd = "\"" + System.getProperty("java.home") + "\\bin\\javaw.exe\" -jar \""
 				+ DManagerUtils.getJarFile().getAbsolutePath() + "\" -m";
-		logger.info("Launch CMD: " + launchCmd);
+		log.info("Launch CMD: " + launchCmd);
 		return NativeMethods.getInstance().presentInStartup("DManager", launchCmd);
 	}
 
@@ -81,7 +80,7 @@ public class WinUtils {
 			builder.command(lst);
 			builder.start();
 		} catch (IOException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 

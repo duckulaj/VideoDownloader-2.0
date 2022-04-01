@@ -3,6 +3,9 @@ package com.hawkins.dmanager;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
 import com.hawkins.dmanager.util.FormatUtilities;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DownloadEntry {
 	private String id, file, folder;
 	private int state, category;

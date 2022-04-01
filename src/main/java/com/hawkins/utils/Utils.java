@@ -21,8 +21,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import com.google.gson.JsonObject;
@@ -31,8 +29,10 @@ import com.hawkins.jobs.DownloadJob;
 import com.hawkins.m3u.M3UItem;
 import com.hawkins.m3u.M3UPlayList;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Utils {
-	private static final Logger logger = LogManager.getLogger(Utils.class.getName());
 	private static String propertyFile;
 
 	public static Properties readProperties(String propertyType) {
@@ -45,14 +45,14 @@ public class Utils {
 			userHome += File.separator;
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Utils.readProperties :: Looking for {}videoDownloader/.dmanager/{}", userHome, propertyType);
+		if (log.isDebugEnabled()) {
+			log.debug("Utils.readProperties :: Looking for {}videoDownloader/.dmanager/{}", userHome, propertyType);
 		}
 		
 		File configFile = new File(userHome, "videoDownloader/.dmanager/" + propertyType);
 
-		if (!configFile.exists() && logger.isDebugEnabled()) {
-			logger.debug("{} does not exist", propertyType);
+		if (!configFile.exists() && log.isDebugEnabled()) {
+			log.debug("{} does not exist", propertyType);
 		}
 
 		Properties props = new Properties();
@@ -62,15 +62,15 @@ public class Utils {
 			props.load(reader);
 			reader.close();
 		} catch (FileNotFoundException fnfe) {
-			logger.debug(fnfe.toString());
+			log.debug(fnfe.toString());
 		} catch (IOException ioe) {
-			logger.debug(ioe.toString());
+			log.debug(ioe.toString());
 		}
 
 		long end = System.currentTimeMillis();
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("readProperties executed in {} ms", (end - start));
+		if (log.isDebugEnabled()) {
+			log.debug("readProperties executed in {} ms", (end - start));
 		}
 		return props;
 	}
@@ -91,13 +91,13 @@ public class Utils {
 			// save properties to project root folder
 			prop.store(output, null);
 
-			if (logger.isDebugEnabled()) {
-				logger.debug(prop);
+			if (log.isDebugEnabled()) {
+				log.debug(prop.toString());
 			}
 
 		} catch (IOException io) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(io.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(io.getMessage());
 			}
 		}
 
@@ -116,14 +116,14 @@ public class Utils {
 			fileOS.getChannel().transferFrom(readChannel, 0L, Long.MAX_VALUE);
 			
 		} catch (IOException ioe) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(ioe.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(ioe.getMessage());
 			}
 		} 
 
 		long end = System.currentTimeMillis();
-		if (logger.isDebugEnabled()) {
-			logger.debug("copyUrlToFile executed in {} ms", (end - start));
+		if (log.isDebugEnabled()) {
+			log.debug("copyUrlToFile executed in {} ms", (end - start));
 		}
 	}
 
@@ -146,10 +146,10 @@ public class Utils {
 			}
 		}
 
-		if (!originalURL.equalsIgnoreCase(address)) logger.debug("Final URL is different to Original URL");
+		if (!originalURL.equalsIgnoreCase(address)) log.debug("Final URL is different to Original URL");
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("getFinalLocation took {} ms", (System.currentTimeMillis() - start));
+		if (log.isDebugEnabled()) {
+			log.debug("getFinalLocation took {} ms", (System.currentTimeMillis() - start));
 		}
 
 		return new URL(address);
@@ -221,8 +221,8 @@ public class Utils {
 				try {
 					FileUtils.forceDelete(new File(j.getDestination()));
 				} catch (IOException e) {
-					if (logger.isDebugEnabled()) {
-					logger.debug(e.getMessage());
+					if (log.isDebugEnabled()) {
+					log.debug(e.getMessage());
 					}
 				}
 			}
@@ -276,7 +276,7 @@ public class Utils {
 			obj = jsonObject;
 
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			log.info(e.getMessage());
 		}
 
 		return obj;
@@ -310,7 +310,7 @@ public class Utils {
 			obj = jsonObject;
 
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			log.info(e.getMessage());
 		}
 
 		return obj;

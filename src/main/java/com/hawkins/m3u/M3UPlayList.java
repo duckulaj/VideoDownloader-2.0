@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -15,9 +12,11 @@ import com.google.gson.JsonObject;
 import com.hawkins.properties.DownloadProperties;
 import com.hawkins.utils.Utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class M3UPlayList implements Runnable {
 
-	private static final Logger logger = LogManager.getLogger(M3UPlayList.class.getName());
 	private List<M3UItem> items = new ArrayList<>();
 	private static M3UPlayList thisInstance = null;
 
@@ -32,8 +31,8 @@ public class M3UPlayList implements Runnable {
 
 	public static synchronized M3UPlayList getInstance()
 	{
-		if (logger.isDebugEnabled()) {
-			logger.debug("Requesting M3UPlayList instance");
+		if (log.isDebugEnabled()) {
+			log.debug("Requesting M3UPlayList instance");
 		}
 
 		if (M3UPlayList.thisInstance == null)
@@ -81,9 +80,9 @@ public class M3UPlayList implements Runnable {
 		JsonObject obj = Utils.searchplayListByActor(filter);
 		JsonArray actors = (JsonArray) obj.get("results"); 
 		
-		if (logger.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			logger.debug(gson.toJson(actors));
+			log.debug(gson.toJson(actors));
 		}
 
 		Iterator<JsonElement> actorsIt = actors.iterator();
@@ -94,9 +93,9 @@ public class M3UPlayList implements Runnable {
 
 			JsonArray knownfor = (JsonArray) actor.get("known_for");
 			
-			if (logger.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				logger.debug(gson.toJson(knownfor));
+				log.debug(gson.toJson(knownfor));
 			}
 
 			Iterator<JsonElement> knownforIt = knownfor.iterator();
@@ -136,9 +135,9 @@ public class M3UPlayList implements Runnable {
 		JsonObject obj = Utils.searchplayListByYear(filter);
 		JsonArray moviesForYear = (JsonArray) obj.get("results"); 
 				
-		if (logger.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			logger.debug(gson.toJson(moviesForYear));
+			log.debug(gson.toJson(moviesForYear));
 		}
 
 		Iterator<JsonElement> moviesIt = moviesForYear.iterator();

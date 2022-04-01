@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import com.hawkins.dmanager.DownloadEntry;
-import com.hawkins.dmanager.DownloadListener;
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.DManagerConstants;
+import com.hawkins.dmanager.DownloadEntry;
+import com.hawkins.dmanager.DownloadListener;
 import com.hawkins.dmanager.downloaders.http.HttpChannel;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
 import com.hawkins.dmanager.util.FormatUtilities;
@@ -20,9 +18,11 @@ import com.hawkins.dmanager.util.HttpDateParser;
 import com.hawkins.dmanager.util.StringUtils;
 import com.hawkins.messages.JobprogressMessage;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class Downloader implements SegmentListener {
 	
-	private static final Logger logger = LogManager.getLogger(Downloader.class.getName());
 
 	protected volatile boolean stopFlag;
 	protected boolean isJavaClientRequired;
@@ -111,8 +111,8 @@ public abstract class Downloader implements SegmentListener {
 			return 0;
 		int count = 0;
 		int totalInactive = findTotalInactiveChunk();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Total inactive chunks: {}", totalInactive);
+		if (log.isDebugEnabled()) {
+			log.debug("Total inactive chunks: {}", totalInactive);
 		}
 
 		if (totalInactive > rem) {
@@ -125,8 +125,8 @@ public abstract class Downloader implements SegmentListener {
 					c.download(this);
 					count++;
 				} else {
-					if (logger.isDebugEnabled()) {
-						logger.debug("$$$ debug rem: {}", rem);
+					if (log.isDebugEnabled()) {
+						log.debug("$$$ debug rem: {}", rem);
 					}
 				}
 			}
@@ -202,17 +202,17 @@ public abstract class Downloader implements SegmentListener {
 		File dir = new File(folder);
 		File[] files = dir.listFiles();
 		for (int i = 0; i < files.length; i++) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Delete: {} [{}] {}", files[i], + files[i].length(), files[i].delete());
+			if (log.isDebugEnabled()) {
+				log.debug("Delete: {} [{}] {}", files[i], + files[i].length(), files[i].delete());
 			}
 		}
 		if (new File(folder).delete()) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("{} deleted", folder);
+			if (log.isDebugEnabled()) {
+				log.debug("{} deleted", folder);
 			}
 		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("{} not deleted", folder);
+			if (log.isDebugEnabled()) {
+				log.debug("{} not deleted", folder);
 			}
 		}
 	}
@@ -254,14 +254,14 @@ public abstract class Downloader implements SegmentListener {
 				this.errorCode = DManagerConstants.ERR_INVALID_RESP;
 			}
 		} else {
-			logger.info("Setting final error code: {}", err);
+			log.info("Setting final error code: {}", err);
 			this.errorCode = err;
 		}
 
 		if (this.listener != null) {
 			this.listener.downloadFailed(this.id);
 		}
-		logger.info("chunk with id {} failed", id);
+		log.info("chunk with id {} failed", id);
 	}
 
 	protected String getOutputFileName(boolean updated) {
@@ -297,7 +297,7 @@ public abstract class Downloader implements SegmentListener {
 				outFile.setLastModified(lastModified.getTime());
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -306,7 +306,7 @@ public abstract class Downloader implements SegmentListener {
 			try {
 				this.lastModified = ((HttpChannel) c.getChannel()).getHeader("last-modified");
 			} catch (Exception e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 		}
 	}

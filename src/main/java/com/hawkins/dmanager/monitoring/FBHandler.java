@@ -7,17 +7,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
-import com.hawkins.dmanager.util.StringUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FBHandler {
 	
-	private static final Logger logger = LogManager.getLogger(FBHandler.class.getName());
 
 //	public static void main(String[] args) {
 //		handle(new File("C:\\Users\\dasgupts\\Downloads\\LitestandTailLoadPagelet"), null);
@@ -36,7 +35,7 @@ public class FBHandler {
 				buf.append(ln + "\n");
 			}
 			in.close();
-			logger.info("Parsing facebook page...");
+			log.info("Parsing facebook page...");
 			ArrayList<String> sdUrls1 = findURL("sd_src", buf);
 			ArrayList<String> sdUrls2 = findURL("sd_src_no_ratelimit", buf);
 			ArrayList<String> hdUrls1 = findURL("hd_src", buf);
@@ -83,7 +82,7 @@ public class FBHandler {
 			}
 			return true;
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			return false;
 		}
 	}
@@ -118,7 +117,7 @@ public class FBHandler {
 				index++;
 				int index3 = buf.indexOf("\"", index);
 				String url = decodeJSONEscape(buf.substring(index, index3).trim().replace("\"", ""));
-				logger.info(keyword + ": " + url);
+				log.info(keyword + ": " + url);
 				urlList.add(url);
 			}
 
@@ -136,7 +135,7 @@ public class FBHandler {
 			//
 			// String url = decodeJSONEscape(buf.substring(collonIndex,
 			// index).trim().replace("\"", ""));
-			// logger.info(keyword + ": " + url);
+			// log.info(keyword + ": " + url);
 			// if (!url.equals("null")) {
 			// urlList.add(url);
 			// }
@@ -152,7 +151,7 @@ public class FBHandler {
 			// int index3 = buf.indexOf("\"", index2 + urlStart.length());
 			// int end = buf.indexOf("\"", index3 + 1);
 			// String url = decodeJSONEscape(buf.substring(index3 + 1, end));
-			// logger.info(keyword + ": " + url);
+			// log.info(keyword + ": " + url);
 			// if (!url.equals("null")) {
 			// urlList.add(url);
 			// }

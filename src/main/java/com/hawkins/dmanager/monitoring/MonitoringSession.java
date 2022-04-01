@@ -13,9 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.DashMetadata;
@@ -27,9 +24,11 @@ import com.hawkins.dmanager.util.DManagerUtils;
 import com.hawkins.dmanager.util.FormatUtilities;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class MonitoringSession implements Runnable {
 	
-	private static final Logger logger = LogManager.getLogger(MonitoringSession.class.getName());
 
 	private String msg204 = "HTTP/1.1 204 No Content\r\n" + "Content-length: 0\r\n\r\n";
 
@@ -63,7 +62,7 @@ public class MonitoringSession implements Runnable {
 
 	private void onDownload(Request request, Response res) throws UnsupportedEncodingException {
 		try {
-			logger.info(new String(request.getBody()));
+			log.info(new String(request.getBody()));
 			byte[] b = request.getBody();
 			ParsedHookData data = ParsedHookData.parse(b);
 			if (data.getUrl() != null && data.getUrl().length() > 0) {
@@ -81,7 +80,7 @@ public class MonitoringSession implements Runnable {
 
 	private void onVideo(Request request, Response res) throws UnsupportedEncodingException {
 		try {
-			logger.info(new String(request.getBody()));
+			log.info(new String(request.getBody()));
 			if (!Config.getInstance().isShowVideoNotification()) {
 				return;
 			}
@@ -230,7 +229,7 @@ public class MonitoringSession implements Runnable {
 				this.response.write(outStream);
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		cleanup();
 	}
@@ -262,7 +261,7 @@ public class MonitoringSession implements Runnable {
 			URL url = new URL(data.getUrl());
 			String host = url.getHost();
 			if (!(host.contains("youtube.com") || host.contains("googlevideo.com"))) {
-				logger.info("non yt host");
+				log.info("non yt host");
 				return false;
 			}
 			String type = data.getContentType();
@@ -270,7 +269,7 @@ public class MonitoringSession implements Runnable {
 				type = "";
 			}
 			if (!(type.contains("audio/") || type.contains("video/") || type.contains("application/octet"))) {
-				logger.info("non yt type");
+				log.info("non yt type");
 				return false;
 			}
 			String low_path = data.getUrl().toLowerCase();
@@ -322,7 +321,7 @@ public class MonitoringSession implements Runnable {
 				}
 				if (itag != 0) {
 					if (YtUtil.isNormalVideo(itag)) {
-						logger.info("Normal vid");
+						log.info("Normal vid");
 						return false;
 					}
 				}
@@ -336,7 +335,7 @@ public class MonitoringSession implements Runnable {
 				info.mime = mime;
 				info.headers = data.getRequestHeaders();
 
-				logger.info("processing yt mime: " + mime + " id: " + id + " clen: " + clen + " itag: " + itag);
+				log.info("processing yt mime: " + mime + " id: " + id + " clen: " + clen + " itag: " + itag);
 
 				if (YtUtil.addToQueue(info)) {
 					DASH_INFO di = YtUtil.getDASHPair(info);
@@ -353,7 +352,7 @@ public class MonitoringSession implements Runnable {
 						if (StringUtils.isNullOrEmptyOrBlank(file)) {
 							file = DManagerUtils.getFileName(data.getUrl());
 						}
-						logger.info("file: " + file + " url1: " + dm.getUrl() + " url2: " + dm.getUrl2() + " len1: "
+						log.info("file: " + file + " url1: " + dm.getUrl() + " url2: " + dm.getUrl2() + " len1: "
 								+ dm.getLen1() + " len2: " + dm.getLen2());
 
 						String szStr = null;
@@ -379,7 +378,7 @@ public class MonitoringSession implements Runnable {
 				return true;
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		return false;
 	}
@@ -396,27 +395,27 @@ public class MonitoringSession implements Runnable {
 
 		try {
 			if (contentType.contains("mpegurl") || ".m3u8".equalsIgnoreCase(ext)) {
-				logger.info("Downloading m3u8 manifest");
+				log.info("Downloading m3u8 manifest");
 				manifestfile = downloadMenifest(data);
 				return M3U8Handler.handle(manifestfile, data);
 			}
 			if (contentType.contains("f4m") || ".f4m".equalsIgnoreCase(ext)) {
-				logger.info("Downloading f4m manifest");
+				log.info("Downloading f4m manifest");
 				manifestfile = downloadMenifest(data);
 				return F4mHandler.handle(manifestfile, data);
 			}
 			if (url.contains(".facebook.com") && url.toLowerCase().contains("pagelet")) {
-				logger.info("Downloading fb manifest");
+				log.info("Downloading fb manifest");
 				manifestfile = downloadMenifest(data);
 				return FBHandler.handle(manifestfile, data);
 			}
 			if (url.contains("player.vimeo.com") && contentType.toLowerCase().contains("json")) {
-				logger.info("Downloading video manifest");
+				log.info("Downloading video manifest");
 				manifestfile = downloadMenifest(data);
 				return VimeoHandler.handle(manifestfile, data);
 			}
 			if (url.contains("instagram.com/p/")) {
-				logger.info("Downloading video manifest");
+				log.info("Downloading video manifest");
 				manifestfile = downloadMenifest(data);
 				return InstagramHandler.handle(manifestfile, data);
 			}
@@ -460,7 +459,7 @@ public class MonitoringSession implements Runnable {
 		file += "." + ext;
 
 		if (data.getContentLength() < Config.getInstance().getMinVidSize()) {
-			logger.info("video less than min size");
+			log.info("video less than min size");
 			return;
 		}
 
@@ -494,19 +493,19 @@ public class MonitoringSession implements Runnable {
 			}
 			client.connect();
 			int resp = client.getStatusCode();
-			logger.info("manifest download response: " + resp);
+			log.info("manifest download response: " + resp);
 			if (resp == 206 || resp == 200) {
 				InputStream in = client.getInputStream();
 				File tmpFile = new File(Config.getInstance().getTemporaryFolder(), UUID.randomUUID().toString());
 				long len = client.getContentLength();
 				out = new FileOutputStream(tmpFile);
 				DManagerUtils.copyStream(in, out, len);
-				logger.info("manifest download successfull");
+				log.info("manifest download successfull");
 
 				return tmpFile;
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				out.close();

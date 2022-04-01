@@ -7,10 +7,14 @@ import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.HlsMetadata;
 import com.hawkins.dmanager.downloaders.metadata.manifests.M3U8Manifest;
 import com.hawkins.dmanager.downloaders.metadata.manifests.M3U8Manifest.M3U8MediaInfo;
-import com.hawkins.dmanager.util.StringUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class M3U8Handler {
+	
 	public static boolean handle(File m3u8file, ParsedHookData data) {
 		try {
 			M3U8Manifest manifest = new M3U8Manifest(m3u8file.getAbsolutePath(), data.getUrl());

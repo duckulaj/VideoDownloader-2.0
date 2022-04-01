@@ -13,15 +13,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.ui.res.StringResource;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class QueueManager {
 	
-	private static final Logger logger = LogManager.getLogger(QueueManager.class.getName());
+	
 
 	private static QueueManager _this;
 	private ArrayList<DownloadQueue> queueList;
@@ -114,13 +113,13 @@ public class QueueManager {
 				}
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				reader.close();
 			} catch (Exception e) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(e.getMessage());
+				if (log.isDebugEnabled()) {
+					log.debug(e.getMessage());
 				}
 			}
 		}
@@ -174,7 +173,7 @@ public class QueueManager {
 				}
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		if (bwr != null) {
 			try {
@@ -182,7 +181,7 @@ public class QueueManager {
 				bwr.flush();
 				bwr.close();
 			} catch (IOException e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 		}
 	}

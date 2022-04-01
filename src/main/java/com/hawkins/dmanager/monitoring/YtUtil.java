@@ -3,14 +3,13 @@ package com.hawkins.dmanager.monitoring;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.network.http.HeaderCollection;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class YtUtil {
 	
-	private static final Logger logger = LogManager.getLogger(YtUtil.class.getName());
 
 	static DASH_INFO lastVid;
 
@@ -40,7 +39,7 @@ public class YtUtil {
 					}
 				}
 				videoQueue.add(info);
-				logger.info("video added " + videoQueue.size());
+				log.info("video added " + videoQueue.size());
 
 				return true;
 			} else {
@@ -53,7 +52,7 @@ public class YtUtil {
 					}
 				}
 				audioQueue.add(info);
-				logger.info("added added " + audioQueue.size());
+				log.info("added added " + audioQueue.size());
 				return true;
 			}
 		}
@@ -67,7 +66,7 @@ public class YtUtil {
 				for (int i = audioQueue.size() - 1; i >= 0; i--) {
 					DASH_INFO di = audioQueue.get(i);
 					if (di.id.equals(info.id)) {
-						logger.info("found matching audio");
+						log.info("found matching audio");
 						return di;
 					}
 				}
@@ -81,7 +80,7 @@ public class YtUtil {
 							return null;
 						}
 						lastVid = di;
-						logger.info("found matching video");
+						log.info("found matching video");
 						return di;
 					}
 				}

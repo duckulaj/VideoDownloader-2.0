@@ -6,17 +6,16 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
-import com.hawkins.dmanager.util.StringUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class VimeoHandler {
 	
-	private static final Logger logger = LogManager.getLogger(VimeoHandler.class.getName());
 
 
 	// public static void main(String[] args) {
@@ -72,7 +71,7 @@ public class VimeoHandler {
 				}
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		return false;
 	}
@@ -87,15 +86,15 @@ public class VimeoHandler {
 				String val = arr[i].substring(index + 1).replace("\"", "");
 				if (key.equals("url")) {
 					url = val;
-					logger.info(url);
+					log.info(url);
 				}
 				if (key.equals("quality")) {
 					quality = val;
-					logger.info(quality);
+					log.info(quality);
 				}
 				if (key.equals("mime")) {
 					type = val;
-					logger.info(type);
+					log.info(type);
 				}
 			}
 		}

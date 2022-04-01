@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.hawkins.dmanager.util.DateTimeUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.DateTimeUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class QueueScheduler implements Runnable {
 	
-	private static final Logger logger = LogManager.getLogger(QueueScheduler.class.getName());
+	
 
 	private boolean stop;
 	private long lastKeepAwakePing = 0L;
@@ -109,8 +109,8 @@ public class QueueScheduler implements Runnable {
 					}
 					Thread.sleep(1000);
 				} catch (Exception e2) {
-					logger.info("error in scheduler: " + e2);
-					logger.info(e2);
+					log.info("error in scheduler: " + e2);
+					log.info(e2.getMessage());
 				}
 
 				long now = System.currentTimeMillis();
@@ -127,8 +127,8 @@ public class QueueScheduler implements Runnable {
 				lastUpdateChecked = now;
 			}
 		} catch (Exception e) {
-			logger.info("error in scheduler: " + e);
-			logger.info(e);
+			log.info("error in scheduler: " + e);
+			log.info(e.getMessage());
 		}
 	}
 }

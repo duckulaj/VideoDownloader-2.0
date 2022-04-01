@@ -8,9 +8,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -19,9 +16,11 @@ import com.google.gson.JsonParser;
 import com.hawkins.dmanager.network.http.HttpHeader;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class YdlResponse {
 	
-	private static final Logger logger = LogManager.getLogger(YdlResponse.class.getName());
 
 	public static final int DASH_HTTP = 99, HTTP = 98, HLS = 97, HDS = 96;
 	private static int DASH_VIDEO_ONLY = 23, DASH_AUDIO_ONLY = 24;
@@ -31,9 +30,9 @@ public class YdlResponse {
 		JsonObject obj = (JsonObject) parser.parse(new InputStreamReader(in));
 		JsonArray entries = (JsonArray) obj.get("entries");
 		
-		if (logger.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			logger.debug(gson.toJson(entries));
+			log.debug(gson.toJson(entries));
 		}
 		
 		if (entries == null) {
@@ -47,9 +46,9 @@ public class YdlResponse {
 			playList.add(getPlaylist(jsobj));
 		}
 		
-		if (logger.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			logger.debug(gson.toJson(playList));
+			log.debug(gson.toJson(playList));
 		}
 		return playList;
 	}
@@ -182,7 +181,7 @@ public class YdlResponse {
 				} else if ("http".equals(fmt.protocol) || "https".equals(fmt.protocol)) {
 					media.type = HTTP;
 				} else {
-					logger.info("unsupported protocol: " + fmt.protocol);
+					log.info("unsupported protocol: " + fmt.protocol);
 					continue;
 				}
 				media.url = fmt.url;

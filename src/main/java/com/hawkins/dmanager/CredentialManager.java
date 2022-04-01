@@ -9,18 +9,17 @@ import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.Set;
 
 import com.hawkins.dmanager.util.Base64;
 import com.hawkins.dmanager.util.StringUtils;
 
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CredentialManager {
 	
-	private static final Logger logger = LogManager.getLogger(CredentialManager.class.getName());
+	
 	private Map<String, PasswordAuthentication> savedCredentials;
 	private Map<String, PasswordAuthentication> cachedCredentials;
 
@@ -82,7 +81,7 @@ public class CredentialManager {
 		try {
 			File f = new File(Config.getInstance().getDataFolder(), ".credentials");
 			if (!f.exists()) {
-				logger.info("No saved credentials");
+				log.info("No saved credentials");
 				return;
 			}
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
@@ -100,7 +99,7 @@ public class CredentialManager {
 						new PasswordAuthentication(arr[1], arr.length == 3 ? arr[2].toCharArray() : new char[0]));
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				if (br != null) {

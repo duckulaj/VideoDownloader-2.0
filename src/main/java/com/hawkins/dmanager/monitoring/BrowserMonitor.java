@@ -5,14 +5,13 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerApp;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class BrowserMonitor implements Runnable {
 	
-	private static final Logger logger = LogManager.getLogger(BrowserMonitor.class.getName());
 
 	private static BrowserMonitor _this;
 	
@@ -41,7 +40,7 @@ public class BrowserMonitor implements Runnable {
 				session.start();
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			DManagerApp.instanceAlreadyRunning();
 		}
 		try {

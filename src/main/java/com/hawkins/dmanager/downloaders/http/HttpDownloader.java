@@ -1,19 +1,18 @@
 package com.hawkins.dmanager.downloaders.http;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerConstants;
 import com.hawkins.dmanager.downloaders.AbstractChannel;
 import com.hawkins.dmanager.downloaders.Segment;
 import com.hawkins.dmanager.downloaders.SegmentDownloader;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
-import com.hawkins.dmanager.util.NetUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.NetUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HttpDownloader extends SegmentDownloader {
 	
-	private static final Logger logger = LogManager.getLogger(HttpDownloader.class.getName());
 
 	private HttpMetadata metadata;
 	private String newFileName;
@@ -39,7 +38,7 @@ public class HttpDownloader extends SegmentDownloader {
 
 	@Override
 	public boolean isFileNameChanged() {
-		logger.info("Checking for filename change {}", (newFileName != null));
+		log.info("Checking for filename change {}", (newFileName != null));
 		return newFileName != null;
 	}
 
@@ -58,9 +57,9 @@ public class HttpDownloader extends SegmentDownloader {
 			metadata.save();
 			if (outputFormat == 0) {
 				newFileName = DManagerUtils.getFileName(metadata.getUrl());
-				if (logger.isDebugEnabled()) {
-					logger.debug("set new filename: {}", newFileName);
-					logger.debug("new file name: {}", newFileName);
+				if (log.isDebugEnabled()) {
+					log.debug("set new filename: {}", newFileName);
+					log.debug("new file name: {}", newFileName);
 				}
 			}
 		}
@@ -70,8 +69,8 @@ public class HttpDownloader extends SegmentDownloader {
 				String name = NetUtils.getNameFromContentDisposition(contentDispositionHeader);
 				if (name != null) {
 					this.newFileName = name;
-					if (logger.isDebugEnabled()) {
-						logger.debug("set new filename: {}", newFileName);
+					if (log.isDebugEnabled()) {
+						log.debug("set new filename: {}", newFileName);
 					}
 				}
 			}
@@ -82,14 +81,14 @@ public class HttpDownloader extends SegmentDownloader {
 				if (!(upperStr.endsWith(".HTML") || upperStr.endsWith(".HTM"))) {
 					outputFormat = 0;
 					this.newFileName += ".html";
-					if (logger.isDebugEnabled()) {
-						logger.debug("set new filename: {}", newFileName);
+					if (log.isDebugEnabled()) {
+						log.debug("set new filename: {}", newFileName);
 					}
 				}
 			}
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("new filename: {}", newFileName);
+		if (log.isDebugEnabled()) {
+			log.debug("new filename: {}", newFileName);
 		}
 	}
 

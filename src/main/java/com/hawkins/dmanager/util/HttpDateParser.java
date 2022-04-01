@@ -6,12 +6,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class HttpDateParser {
 	
-	private static final Logger logger = LogManager.getLogger(HttpDateParser.class.getName());
 
 	private static SimpleDateFormat fmt;
 
@@ -26,7 +25,7 @@ public class HttpDateParser {
 		try {
 			return fmt.parse(lastModified);
 		} catch (ParseException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		return null;
 	}

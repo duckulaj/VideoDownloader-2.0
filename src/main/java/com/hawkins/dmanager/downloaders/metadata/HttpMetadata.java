@@ -7,18 +7,17 @@ import java.io.FileReader;
 import java.util.Iterator;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerConstants;
 import com.hawkins.dmanager.network.http.HeaderCollection;
 import com.hawkins.dmanager.network.http.HttpHeader;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HttpMetadata {
 	
-	private static final Logger logger = LogManager.getLogger(HttpMetadata.class.getName());
 
 	protected String id;
 	protected String url;
@@ -27,7 +26,7 @@ public class HttpMetadata {
 	private String ydlUrl;
 
 	public HttpMetadata derive() {
-		logger.info("derive normal metadata");
+		log.info("derive normal metadata");
 		HttpMetadata md = new HttpMetadata();
 		md.setHeaders(this.getHeaders());
 		md.setUrl(this.getUrl());
@@ -78,7 +77,7 @@ public class HttpMetadata {
 	//
 	// br.close();
 	// } catch (Exception e) {
-	// logger.info(e);
+	// log.info(e.getMessage());
 	// if (br != null) {
 	// try {
 	// br.close();
@@ -124,7 +123,7 @@ public class HttpMetadata {
 	// }
 
 	public static HttpMetadata load(String id) {
-		logger.info("loading metadata: "+id);
+		log.info("loading metadata: "+id);
 		BufferedReader br = null;
 		HttpMetadata metadata = null;
 		int type;
@@ -132,12 +131,12 @@ public class HttpMetadata {
 			br = new BufferedReader(new FileReader(new File(Config.getInstance().getMetadataFolder(), id)));
 			String ln = br.readLine();
 			if (ln == null) {
-				logger.info("invalid metadata, file is empty");
+				log.info("invalid metadata, file is empty");
 				return null;
 			}
 			int index = ln.indexOf(":");
 			if (index < 0) {
-				logger.info("invalid metadata file starting with: " + ln);
+				log.info("invalid metadata file starting with: " + ln);
 				return null;
 			}
 			String key = ln.substring(0, index).trim().toLowerCase();
@@ -154,7 +153,7 @@ public class HttpMetadata {
 					metadata = new DashMetadata(id);
 				}
 			} else {
-				logger.info("invalid metadata file starting with: " + ln);
+				log.info("invalid metadata file starting with: " + ln);
 				return null;
 			}
 			while (true) {
@@ -203,13 +202,13 @@ public class HttpMetadata {
 					((HdsMetadata) metadata).setBitRate(Integer.parseInt(val));
 				}
 				if (key.equals("ydlurl")) {
-					logger.info("ydurl: "+val);
+					log.info("ydurl: "+val);
 					metadata.ydlUrl = val;
 				}
 			}
 			br.close();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
@@ -267,7 +266,7 @@ public class HttpMetadata {
 			fw.write(sb.toString().getBytes());
 			fw.close();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			if (fw != null) {
 				try {
 					fw.close();

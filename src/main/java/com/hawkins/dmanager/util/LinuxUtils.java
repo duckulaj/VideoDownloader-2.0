@@ -6,12 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class LinuxUtils {
 	
-	private static final Logger logger = LogManager.getLogger(LinuxUtils.class.getName());
 
 	private LinuxUtils() {
 		throw new IllegalStateException("Utility class");
@@ -30,7 +29,7 @@ public class LinuxUtils {
 				if (ret == 0)
 					break;
 			} catch (Exception e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 		}
 	}
@@ -44,7 +43,7 @@ public class LinuxUtils {
 			pb.command("xdg-open", f.getAbsolutePath());
 			pb.start();// .waitFor();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -53,7 +52,7 @@ public class LinuxUtils {
 			Runtime.getRuntime().exec(
 					"dbus-send --print-reply --type=method_call --dest=org.freedesktop.ScreenSaver /ScreenSaver org.freedesktop.ScreenSaver.SimulateUserActivity");
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -66,7 +65,7 @@ public class LinuxUtils {
 			fs = new FileOutputStream(f);
 			fs.write(getDesktopFileString().getBytes());
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				if (fs != null)
@@ -89,7 +88,7 @@ public class LinuxUtils {
 				return false;
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				if (in != null)
@@ -129,7 +128,7 @@ public class LinuxUtils {
 			pb.command("xdg-open", url);
 			pb.start();// .waitFor();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 }

@@ -3,29 +3,27 @@ package com.hawkins.dmanager.downloaders.http;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.hawkins.dmanager.DManagerConstants;
 import com.hawkins.dmanager.downloaders.AbstractChannel;
 import com.hawkins.dmanager.downloaders.Segment;
 import com.hawkins.dmanager.network.ProxyResolver;
+import com.hawkins.dmanager.network.http.DManagerHttpClient;
 import com.hawkins.dmanager.network.http.HeaderCollection;
 import com.hawkins.dmanager.network.http.HttpClient;
 import com.hawkins.dmanager.network.http.HttpHeader;
 import com.hawkins.dmanager.network.http.JavaClientRequiredException;
 import com.hawkins.dmanager.network.http.JavaHttpClient;
 import com.hawkins.dmanager.network.http.WebProxy;
-import com.hawkins.dmanager.network.http.DManagerHttpClient;
 import com.hawkins.dmanager.util.DManagerUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HttpChannel extends AbstractChannel {
 	
-	private static final Logger logger = LogManager.getLogger(HttpChannel.class.getName());
 
 	private String url;
 	private HeaderCollection headers;
@@ -61,13 +59,13 @@ public class HttpChannel extends AbstractChannel {
 			if (chunk.getLength() < 0 && chunk.getDownloaded() > 0) {
 				errorCode = DManagerConstants.ERR_NO_RESUME;
 				closeImpl();
-				logger.info("server does not support resuming");
+				log.info("server does not support resuming");
 				return false;
 			}
 			try {
 				chunk.reopenStream();
 			} catch (IOException e) {
-				logger.info(e);
+				log.info(e.getMessage());
 				closeImpl();
 				errorCode = DManagerConstants.ERR_NO_RESUME;
 				return false;
@@ -78,14 +76,14 @@ public class HttpChannel extends AbstractChannel {
 				chunk.resetStream();
 				chunk.setDownloaded(0);
 			} catch (IOException e) {
-				logger.info("Stream rest failed");
-				logger.info(e);
+				log.info("Stream rest failed");
+				log.info(e.getMessage());
 			}
 		}
 		while (!stop) {
 			isRedirect = false;
 			try {
-				logger.debug("Connecting to: " + url + " " + chunk.getTag());
+				log.debug("Connecting to: " + url + " " + chunk.getTag());
 				WebProxy wp = ProxyResolver.resolve(url);
 				if (wp != null) {
 					javaClientRequired = true;
@@ -118,7 +116,7 @@ public class HttpChannel extends AbstractChannel {
 				long expectedLength = endOff - startOff;
 
 				if (length > 0 && expectedLength > 0) {
-					logger.debug(chunk + " requesting:- " + "Range:" + "bytes=" + startOff + "-" + (endOff - 1));
+					log.debug(chunk + " requesting:- " + "Range:" + "bytes=" + startOff + "-" + (endOff - 1));
 					hc.setHeader("Range", "bytes=" + startOff + "-" + (endOff - 1));
 				} else {
 					hc.setHeader("Range", "bytes=0-");
@@ -133,17 +131,17 @@ public class HttpChannel extends AbstractChannel {
 
 				int code = hc.getStatusCode();
 
-				logger.debug(chunk + ": " + code);
+				log.debug(chunk + ": " + code);
 
 				if (code >= 300 && code < 400) {
 					closeImpl();
 					if (totalLength > 0) {
 						errorCode = DManagerConstants.ERR_INVALID_RESP;
-						logger.info(chunk + " Redirecting twice");
+						log.info(chunk + " Redirecting twice");
 						return false;
 					} else {
 						url = hc.getResponseHeader("location");
-						logger.debug(chunk + " location: " + url);
+						log.debug(chunk + " location: " + url);
 						if (!url.startsWith("http")) {
 							if (!url.startsWith("/")) {
 								url = "/" + url;
@@ -155,7 +153,7 @@ public class HttpChannel extends AbstractChannel {
 						redirected = true;
 						redirectUrl = url;
 						throw new Exception("Redirecting to: " + url);
-						// logger.info("Redirecting to: " + url);
+						// log.info("Redirecting to: " + url);
 					}
 				}
 
@@ -168,7 +166,7 @@ public class HttpChannel extends AbstractChannel {
 
 				if (code == 407 || code == 401) {
 					if (javaClientRequired) {
-						logger.info("asking for password");
+						log.info("asking for password");
 						boolean proxy = code == 407;
 						/*
 						 * if (!chunk.promptCredential(hc.getHost(), proxy)) { errorCode =
@@ -184,13 +182,13 @@ public class HttpChannel extends AbstractChannel {
 					if ("text/plain".equals(hc.getResponseHeader("content-type"))) {
 						ByteArrayOutputStream bout = new ByteArrayOutputStream();
 						InputStream inStr = hc.getInputStream();
-						if (logger.isDebugEnabled()) {
-							logger.debug(inStr);
+						if (log.isDebugEnabled()) {
+							log.debug(inStr.toString());
 						}
 						long len = hc.getContentLength();
 						int read = 0;
-						if (logger.isDebugEnabled()) {
-							logger.debug("reading url of length: {}", len);
+						if (log.isDebugEnabled()) {
+							log.debug("reading url of length: {}", len);
 						}
 						while (true) {
 							if (len > 0 && read == len)
@@ -204,8 +202,8 @@ public class HttpChannel extends AbstractChannel {
 								}
 							}
 							read++;
-							if (logger.isDebugEnabled()) {
-								logger.debug((char) x);
+							if (log.isDebugEnabled()) {
+								log.debug(String.valueOf(x));
 							}
 							bout.write(x);
 						}
@@ -236,35 +234,35 @@ public class HttpChannel extends AbstractChannel {
 					// if (chunk.getStartOffset() + chunk.getDownloaded()
 					// + firstLength != totalLength)
 					{
-						logger.info(chunk + " length mismatch: expected: " + expectedLength + " got: " + firstLength);
+						log.info(chunk + " length mismatch: expected: " + expectedLength + " got: " + firstLength);
 						errorCode = DManagerConstants.ERR_NO_RESUME;
 						closeImpl();
 						return false;
 					}
 				}
 				if (hc.getContentLength() > 0 && DManagerUtils.getFreeSpace(null) < hc.getContentLength()) {
-					logger.info("Disk is full");
+					log.info("Disk is full");
 					errorCode = DManagerConstants.DISK_FAIURE;
 					closeImpl();
 					return false;
 				}
 
 				in = hc.getInputStream();
-				if (logger.isDebugEnabled()) {
-					logger.debug("Connection success");
+				if (log.isDebugEnabled()) {
+					log.debug("Connection success");
 				}
 				return true;
 
 			} catch (JavaClientRequiredException e) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("java client required");
+				if (log.isDebugEnabled()) {
+					log.debug("java client required");
 				}
 				javaClientRequired = true;
 				sleepInterval = 0;
 			} catch (Exception e) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(chunk);
-					logger.debug(e.getMessage());
+				if (log.isDebugEnabled()) {
+					log.debug(chunk.toString());
+					log.debug(e.getMessage());
 				}
 				if (isRedirect) {
 					closeImpl();
@@ -281,7 +279,7 @@ public class HttpChannel extends AbstractChannel {
 			}
 		}
 
-		logger.info("return as " + errorCode);
+		log.info("return as " + errorCode);
 
 		return false;
 	}

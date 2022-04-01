@@ -3,16 +3,15 @@ package com.hawkins.dmanager.util;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.network.http.JavaHttpClient;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class UpdateChecker {
 	
-	private static final Logger logger = LogManager.getLogger(UpdateChecker.class.getName());
 
 	private static final String APP_UPDAT_URL = "http://xdman.sourceforge.net/update/update_check.php",
 			COMPONENTS_UPDATE_URL = "http://xdman.sourceforge.net/components/update_check.php";
@@ -69,12 +68,12 @@ public class UpdateChecker {
 			client = new JavaHttpClient((app ? APP_UPDAT_URL : COMPONENTS_UPDATE_URL) + "?ver=" + version);
 			client.connect();
 			int resp = client.getStatusCode();
-			logger.info("manifest download response: " + resp);
+			log.info("manifest download response: " + resp);
 			if (resp == 200) {
 				return true;
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				client.dispose();

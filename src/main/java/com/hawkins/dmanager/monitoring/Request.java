@@ -6,6 +6,9 @@ import java.io.InputStream;
 import com.hawkins.dmanager.network.http.HeaderCollection;
 import com.hawkins.dmanager.util.NetUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Request {
 	private String url;
 	private HeaderCollection headers;

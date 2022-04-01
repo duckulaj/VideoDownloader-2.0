@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.hawkins.utils.Constants;
 import com.hawkins.utils.Utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DownloadProperties implements Runnable {
 
-	private static final Logger logger = LogManager.getLogger(DownloadProperties.class.getName());
 
 	private static DownloadProperties thisInstance = null;
 
@@ -57,7 +57,7 @@ public class DownloadProperties implements Runnable {
 
 	public static synchronized DownloadProperties getInstance()
 	{
-		logger.debug("Requesting M3UPlayList instance");
+		log.debug("Requesting M3UPlayList instance");
 
 		if (DownloadProperties.thisInstance == null)
 		{
@@ -76,12 +76,12 @@ public class DownloadProperties implements Runnable {
 			Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 
 		} catch (IOException ex) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("I/O Error when copying file");
+			if (log.isDebugEnabled()) {
+				log.debug("I/O Error when copying file");
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Exception copying file");
+			if (log.isDebugEnabled()) {
+				log.debug("Exception copying file");
 			}
 		}
 

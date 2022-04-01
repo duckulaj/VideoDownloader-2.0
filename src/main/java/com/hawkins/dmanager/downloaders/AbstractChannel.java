@@ -3,15 +3,13 @@ package com.hawkins.dmanager.downloaders;
 import java.io.EOFException;
 import java.io.InputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.downloaders.http.HttpChannel;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class AbstractChannel implements Runnable {
 	
-	private static final Logger logger = LogManager.getLogger(AbstractChannel.class.getName());
 
 	protected Segment chunk;
 	private InputStream in;
@@ -45,8 +43,8 @@ public abstract class AbstractChannel implements Runnable {
 		try {
 			chunk.getChunkListener().synchronize();
 		} catch (NullPointerException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("stopped chunk {}", chunk);
+			if (log.isDebugEnabled()) {
+				log.debug("stopped chunk {}", chunk);
 			}
 			return false;
 		}
@@ -54,8 +52,8 @@ public abstract class AbstractChannel implements Runnable {
 			in = getInputStreamImpl();
 			long length = getLengthImpl();
 			if (chunk.getLength() < 0) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Setting length of {} to ", chunk.getId(), length);
+				if (log.isDebugEnabled()) {
+					log.debug("Setting length of {} to ", chunk.getId(), length);
 				}
 				chunk.setLength(length);
 			}
@@ -91,8 +89,8 @@ public abstract class AbstractChannel implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Internal problem: {}", e);
+			if (log.isDebugEnabled()) {
+				log.debug("Internal problem: {}", e);
 			}
 			if (!stop) {
 				if (errorMessage == null) errorMessage = "AbstractChannel().run :: errorMessage is null";
@@ -132,8 +130,8 @@ public abstract class AbstractChannel implements Runnable {
 						close();
 					}
 					if (chunk.transferComplete()) {
-						if (logger.isDebugEnabled()) {
-							logger.debug("{} complete and closing {} {}",chunk, chunk.getDownloaded(), chunk.getLength());
+						if (log.isDebugEnabled()) {
+							log.debug("{} complete and closing {} {}",chunk, chunk.getDownloaded(), chunk.getLength());
 						}
 						return true;
 					}
@@ -158,8 +156,8 @@ public abstract class AbstractChannel implements Runnable {
 			}
 			return false;
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(e);
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 			return false;
 		} finally {

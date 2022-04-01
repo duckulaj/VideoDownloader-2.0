@@ -3,8 +3,6 @@ package com.hawkins.component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +10,13 @@ import com.hawkins.m3u.M3UtoStrm;
 import com.hawkins.properties.DownloadProperties;
 import com.hawkins.utils.Utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class ScheduledTasks {
 
-	private static final Logger logger = LogManager.getLogger("ScheduledTasks.class");
+	
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
@@ -23,15 +24,15 @@ public class ScheduledTasks {
 	public void resetM3UFile() {
 		
 		String dateString = dateFormat.format(new Date());
-		if (logger.isDebugEnabled()) {
-			logger.debug("The time is now {}", dateString);
+		if (log.isDebugEnabled()) {
+			log.debug("The time is now {}", dateString);
 		}
 		
 		DownloadProperties downloadProperties = DownloadProperties.getInstance();
 
 		Utils.copyUrlToFile(downloadProperties.getChannels(), downloadProperties.getFullM3U());
-		if (logger.isDebugEnabled()) {
-			logger.debug("Reloaded m3u file at {}", dateString);
+		if (log.isDebugEnabled()) {
+			log.debug("Reloaded m3u file at {}", dateString);
 		}
 	}
 	
@@ -41,7 +42,7 @@ public class ScheduledTasks {
 	  public void createStreams() {
 	  
 		  M3UtoStrm.convertM3UtoStream();
-		  logger.info("Scheduled Task createStreams() completed");
+		  log.info("Scheduled Task createStreams() completed");
 	  }
 	 
 }

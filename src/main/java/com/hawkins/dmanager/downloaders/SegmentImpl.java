@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SegmentImpl implements Segment {
 	
-	private static final Logger logger = LogManager.getLogger(SegmentImpl.class.getName());
 
 	private volatile long length;
 	private volatile long startOffset;
@@ -42,8 +41,8 @@ public class SegmentImpl implements Segment {
 		this.config = Config.getInstance();
 		outStream = new RandomAccessFile(new File(folder, id), "rw");
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("File opened {}", id);
+		if (log.isDebugEnabled()) {
+			log.debug("File opened {}", id);
 		}
 	}
 
@@ -60,9 +59,9 @@ public class SegmentImpl implements Segment {
 		try {
 			outStream = new RandomAccessFile(new File(folder, id), "rw");
 			outStream.seek(dwn);
-			logger.info("File opened {}", id);
+			log.info("File opened {}", id);
 		} catch (IOException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			if (outStream != null) {
 				outStream.close();
 			}
@@ -102,7 +101,7 @@ public class SegmentImpl implements Segment {
 			try {
 				outStream.close();
 			} catch (IOException e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 			channel = null;
 			if (cl.shouldCleanup()) {
@@ -131,14 +130,14 @@ public class SegmentImpl implements Segment {
 				outStream.close();
 				outStream = null;
 			} catch (IOException e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 		}
 		
 		if (channel != null) {
 			this.errorCode = channel.getErrorCode();
-			if (logger.isDebugEnabled()) {
-				logger.debug("{} notifying failure {} Error code is {}", id, this.channel, this.errorCode);
+			if (log.isDebugEnabled()) {
+				log.debug("{} notifying failure {} Error code is {}", id, this.channel, this.errorCode);
 			}
 			this.channel = null;	
 		}
@@ -151,8 +150,8 @@ public class SegmentImpl implements Segment {
 		try {
 			cl.chunkFailed(id, reason);
 		} catch (Exception e) {
-			logger.info(reason);
-			logger.info(e.getMessage());
+			log.info(reason);
+			log.info(e.getMessage());
 		
 		} finally {
 			cl = null;
@@ -219,7 +218,7 @@ public class SegmentImpl implements Segment {
 			try {
 				outStream.close();
 			} catch (IOException e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 		}
 	}
@@ -268,7 +267,7 @@ public class SegmentImpl implements Segment {
 	 * bytesRead2; bytesRead2 = downloaded; long timeShouldRequired =
 	 * bytesDownloaded / maxBpms; if (timeShouldRequired > timeSpentInReal) { long
 	 * timeNeedToSleep = timeShouldRequired - timeSpentInReal;
-	 * Thread.sleep(timeNeedToSleep); } } } catch (Exception e) { logger.info(e); }
+	 * Thread.sleep(timeNeedToSleep); } } } catch (Exception e) { log.info(e.getMessage()); }
 	 * }
 	 */
 	
@@ -308,11 +307,11 @@ public class SegmentImpl implements Segment {
 		try {
 			outStream = new RandomAccessFile(new File(folder, id), "rw");
 			outStream.seek(downloaded);
-			if (logger.isDebugEnabled()) {
-				logger.debug("File opened {}", id);
+			if (log.isDebugEnabled()) {
+				log.debug("File opened {}", id);
 			}
 		} catch (IOException e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			if (outStream != null) {
 				outStream.close();
 			}

@@ -5,15 +5,14 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.util.DManagerUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class StringResource {
 	
-	private static final Logger logger = LogManager.getLogger(StringResource.class.getName());
 
 	private static Properties strings;
 
@@ -29,7 +28,7 @@ public class StringResource {
 					File jarPath = DManagerUtils.getJarFile().getParentFile();
 					langFile = new File(jarPath, "lang/" + lang + ".txt");
 					if (!langFile.exists()) {
-						logger.info("Unable to find language file: " + langFile);
+						log.info("Unable to find language file: " + langFile);
 						en = true;
 						Config.getInstance().setLanguage("en");
 					}

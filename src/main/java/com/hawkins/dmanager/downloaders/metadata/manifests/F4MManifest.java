@@ -13,8 +13,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -24,9 +22,11 @@ import org.xml.sax.InputSource;
 import com.hawkins.dmanager.util.Base64;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class F4MManifest {
 	
-	private static final Logger logger = LogManager.getLogger(F4MManifest.class.getName());
 
 	private static XPath xpath;
 	private long selectedBitRate;
@@ -75,7 +75,7 @@ public class F4MManifest {
 		System.out.println(fragNum + " " + fragCount);
 		if (fragNum >= fragCount)
 			throw new Exception("No fragment available for downloading");
-		logger.info("[F4M Parser: selectedMedia.url: " + selectedMedia.url);
+		log.info("[F4M Parser: selectedMedia.url: " + selectedMedia.url);
 
 		if (selectedMedia.getUrl().startsWith("http")) {
 			System.out.println("============ " + selectedMedia.getUrl());
@@ -87,11 +87,11 @@ public class F4MManifest {
 				fragUrl = baseUrl + "/" + selectedMedia.getUrl();
 			}
 		}
-		logger.info("fragUrl: " + fragUrl + "\nfragCount: " + fragCount + " baseUrl: " + baseUrl);
+		log.info("fragUrl: " + fragUrl + "\nfragCount: " + fragCount + " baseUrl: " + baseUrl);
 
 		// int fragsToDownload = fragCount - fragNum;
 		while (fragNum < fragCount) {
-			logger.info("Remaining: " + (fragCount - fragNum));
+			log.info("Remaining: " + (fragCount - fragNum));
 			fragNum++;
 			segNum = getSegmentFromFragment(fragNum);
 
@@ -108,7 +108,7 @@ public class F4MManifest {
 				}
 			}
 			if (discontinuity != 0) {
-				logger.info("Skipping fragment " + fragNum + " due to discontinuity, Type: " + discontinuity);
+				log.info("Skipping fragment " + fragNum + " due to discontinuity, Type: " + discontinuity);
 				continue;
 			}
 			String ___url = getFragmentUrl(segNum, fragNum);// +(string.IsNullOrEmpty(query)
@@ -132,7 +132,7 @@ public class F4MManifest {
 			}
 
 			// query = query + (query.Contains("?") ? "&" + pv : "?" + pv);
-			logger.info(___url);
+			log.info(___url);
 			urlList.add(___url);
 		}
 
@@ -216,7 +216,7 @@ public class F4MManifest {
 		}
 
 		if (media == null) {
-			logger.info("Could not find media");
+			log.info("Could not find media");
 			return;
 		}
 
@@ -238,11 +238,11 @@ public class F4MManifest {
 			fragsPerSeg = fragCount;
 		if (live) {
 			fromTimestamp = -1;
-			logger.info("F4M Parser: [Live stream]");
+			log.info("F4M Parser: [Live stream]");
 		} else {
-			logger.info("F4M Parser: [Not Live stream]");
+			log.info("F4M Parser: [Not Live stream]");
 		}
-		logger.info("F4M Parser: Start- " + start);
+		log.info("F4M Parser: Start- " + start);
 		selectedMedia = media;
 	}
 
@@ -289,7 +289,7 @@ public class F4MManifest {
 			Document doc = builder.parse(new InputSource(r));
 			return doc;
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			if (r != null) {
 				try {
@@ -382,7 +382,7 @@ public class F4MManifest {
 		bPtr.setPos(pos);
 
 		String movieIdentifier = readString(bPtr);
-		logger.info("[F4M Parser- movieIdentifier: " + movieIdentifier);
+		log.info("[F4M Parser- movieIdentifier: " + movieIdentifier);
 		pos = bPtr.getPos();
 
 		int serverEntryCount = readByte(bootstrapInfo, pos++);
@@ -428,7 +428,7 @@ public class F4MManifest {
 			pos = ptr.getPos();
 			boxSize = boxInfo.getBoxSize();
 			String boxType = boxInfo.getBoxType();
-			logger.info("555 " + boxType + " " + boxSize);
+			log.info("555 " + boxType + " " + boxSize);
 			if (boxType.equals("afrt"))
 				parseAfrtBox(bootstrapInfo, pos);
 			pos += (int) boxSize;
@@ -438,7 +438,7 @@ public class F4MManifest {
 	}
 
 	private void parseSegAndFragTable() {
-		logger.info("parseSegAndFragTable called");
+		log.info("parseSegAndFragTable called");
 		if ((segTable.size() == 0) || (fragTable.size() == 0)) {
 			System.out.println("return as zero " + segTable.size() + " " + fragTable.size());
 			return;

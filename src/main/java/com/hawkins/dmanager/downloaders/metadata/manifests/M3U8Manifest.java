@@ -7,14 +7,13 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class M3U8Manifest {
 	
-	private static final Logger logger = LogManager.getLogger(M3U8Manifest.class.getName());
 
 	private String playlistUrl;
 	private float duration;
@@ -110,13 +109,13 @@ public class M3U8Manifest {
 							duration += Float.parseFloat(str);
 						}
 					} catch (Exception e) {
-						logger.info(e);
+						log.info(e.getMessage());
 					}
 
 				}
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			throw new IOException("Unable to parse menifest");
 		} finally {
 			try {

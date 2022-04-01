@@ -13,18 +13,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerConstants;
 import com.hawkins.dmanager.downloaders.metadata.DashMetadata;
 import com.hawkins.dmanager.util.FormatUtilities;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class SegmentDownloader extends Downloader implements SegmentListener {
 	
-	private static final Logger logger = LogManager.getLogger(SegmentDownloader.class.getName());
 
 	private boolean init = false;
 	private int minChunkSize = 256 * 1024;
@@ -43,7 +42,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 	}
 
 	public void start() {
-		logger.info("creating folder {}", folder);
+		log.info("creating folder {}", folder);
 		new File(folder).mkdirs();
 		chunks = new ArrayList<Segment>();
 		try {
@@ -68,24 +67,24 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 	public void resume() {
 		try {
 			stopFlag = false;
-			logger.info("Resuming");
+			log.info("Resuming");
 			if (!restoreState()) {
-				logger.info("Starting from beginning");
+				log.info("Starting from beginning");
 				start();
 				return;
 			}
 			this.lastDownloaded = downloaded;
 			this.prevTime = System.currentTimeMillis();
-			logger.info("Restore success");
+			log.info("Restore success");
 			init = true;
 			Segment c1 = findInactiveChunk();
 			if (c1 != null) {
 				try {
 					c1.download(this);
 				} catch (Exception e) {
-					logger.info(e);
+					log.info(e.getMessage());
 					if (!stopFlag) {
-						logger.info(e);
+						log.info(e.getMessage());
 						this.errorCode = DManagerConstants.RESUME_FAILED;
 						listener.downloadFailed(this.id);
 						return;
@@ -94,10 +93,10 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			} else if (allFinished()) {
 				assembleAsync();
 			} else {
-				logger.info("Internal error: no inactive/incomplete chunk found while resuming!");
+				log.info("Internal error: no inactive/incomplete chunk found while resuming!");
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			this.errorCode = DManagerConstants.RESUME_FAILED;
 			listener.downloadFailed(this.id);
 			return;
@@ -108,8 +107,8 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 		if (stopFlag)
 			return;
 		int activeCount = getActiveChunkCount();
-		if (logger.isDebugEnabled()) {
-			logger.debug("active count: {}", activeCount);
+		if (log.isDebugEnabled()) {
+			log.debug("active count: {}", activeCount);
 		}
 		if (activeCount == maxCount) {
 			return;
@@ -123,8 +122,8 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			Segment c1 = findMaxChunk();
 			Segment c = splitChunk(c1);
 			if (c != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("creating chunk {}", c);
+				if (log.isDebugEnabled()) {
+					log.debug("creating chunk {}", c);
 				}
 				chunks.add(c);
 				c.download(this);
@@ -163,8 +162,8 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 		long rem = c.getLength() - c.getDownloaded();
 		long offset = c.getStartOffset() + c.getLength() - rem / 2;
 		long len = rem / 2;
-		if (logger.isDebugEnabled()) {
-			logger.debug("Changing length from: {} to {}", c.getLength(), (c.getLength() - rem / 2));
+		if (log.isDebugEnabled()) {
+			log.debug("Changing length from: {} to {}", c.getLength(), (c.getLength() - rem / 2));
 		}
 		c.setLength(c.getLength() - rem / 2);
 		Segment c2 = new SegmentImpl(this, folder);
@@ -198,15 +197,15 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			updateStatus();
 			try {
 				assemble();
-				logger.info("********Download finished*********");
+				log.info("********Download finished*********");
 				updateStatus();
 				listener.downloadFinished(this.id);
 			} catch (Exception e) {
 				if (!stopFlag) {
-					logger.info(e);
+					log.info(e.getMessage());
 					this.errorCode = DManagerConstants.ERR_ASM_FAILED;
 					listener.downloadFailed(this.id);
-					logger.info("********Download failed*********");
+					log.info("********Download failed*********");
 				}
 			}
 
@@ -214,14 +213,14 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			return true;
 		}
 		Segment chunk = getById(id);
-		if (logger.isDebugEnabled()) {
-			logger.debug("Complete: {} {} {}", chunk, chunk.getDownloaded(), chunk.getLength());
+		if (log.isDebugEnabled()) {
+			log.debug("Complete: {} {} {}", chunk, chunk.getDownloaded(), chunk.getLength());
 		}
 			Segment nextNeedyChunk = findNextNeedyChunk(chunk);
 		if (nextNeedyChunk != null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("****************Needy chunk found****************");
-				logger.debug("Stopping: {}", nextNeedyChunk);
+			if (log.isDebugEnabled()) {
+				log.debug("****************Needy chunk found****************");
+				log.debug("Stopping: {}", nextNeedyChunk);
 			}
 			nextNeedyChunk.stop();
 			chunks.remove(nextNeedyChunk);
@@ -242,8 +241,8 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			Segment c = getById(id);
 			this.length = c.getLength();
 			init = true;
-			if (logger.isDebugEnabled()) {
-				logger.debug("size: {}", this.length);
+			if (log.isDebugEnabled()) {
+				log.debug("size: {}", this.length);
 			}
 			super.getLastModifiedDate(c);
 			saveState();
@@ -291,7 +290,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 					try {
 						retryFailedChunks(rem);
 					} catch (Exception e) {
-						logger.info(e);
+						log.info(e.getMessage());
 					}
 				}
 			}
@@ -310,15 +309,15 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			if (stopFlag)
 				return;
 			byte[] buf = new byte[8192 * 8];
-			logger.info("assembling... ");
+			log.info("assembling... ");
 			Collections.sort(chunks, new SegmentComparator());
 
 			out = new FileOutputStream(outFile);
 			bufOut = new BufferedOutputStream(out);
 			
 			for (int i = 0; i < chunks.size(); i++) {
-				if (logger.isDebugEnabled()) { 
-					logger.debug("chunk {} {}", i, stopFlag);
+				if (log.isDebugEnabled()) { 
+					log.debug("chunk {} {}", i, stopFlag);
 				}
 				Segment c = chunks.get(i);
 				in = new FileInputStream(new File(folder, c.getId()));
@@ -377,14 +376,14 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			setLastModifiedDate(outFile);
 			assembleFinished = true;
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			throw new IOException(e);
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (Exception e2) {
-					logger.info(e2);
+					log.info(e2.getMessage());
 				}
 			}
 			if (bufOut != null) {
@@ -393,7 +392,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 					bufOut.close();
 					out.close();
 				} catch (Exception e2) {
-					logger.info(e2);
+					log.info(e2.getMessage());
 				}
 			}
 		}
@@ -438,7 +437,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			bwr.close();
 			
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -468,15 +467,15 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 					seg.setTag("T1");
 				}
 
-				logger.debug("id: " + seg.getId() + "\nlength: " + seg.getLength() + "\noffset: " + seg.getStartOffset()
+				log.debug("id: " + seg.getId() + "\nlength: " + seg.getLength() + "\noffset: " + seg.getStartOffset()
 						+ "\ndownload: " + seg.getDownloaded());
 				chunks.add(seg);
 			}
 			this.lastModified = br.readLine();
 			return true;
 		} catch (Exception e) {
-			logger.info("Failed to load saved state");
-			logger.info(e);
+			log.info("Failed to load saved state");
+			log.info(e.getMessage());
 		}
 		return false;
 	}
@@ -533,7 +532,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 			}
 			listener.downloadUpdated(id);
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 
@@ -545,13 +544,13 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 				finished = true;
 				try {
 					assemble();
-					logger.info("********Download finished*********");
+					log.info("********Download finished*********");
 					updateStatus();
 					cleanup();
 					listener.downloadFinished(id);
 				} catch (Exception e) {
 					if (!stopFlag) {
-						logger.info(e);
+						log.info(e.getMessage());
 						errorCode = DManagerConstants.ERR_ASM_FAILED;
 						listener.downloadFailed(id);
 					}

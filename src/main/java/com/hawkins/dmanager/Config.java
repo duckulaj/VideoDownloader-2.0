@@ -3,15 +3,15 @@ package com.hawkins.dmanager;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.util.DManagerUtils;
 import com.hawkins.properties.DmProperties;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Config {
 	
-	private static final Logger logger = LogManager.getLogger(Config.class.getName());
+	
 
 	private boolean monitoring = true;
 	private String metadataFolder;
@@ -62,7 +62,7 @@ public class Config {
 		try {
 			DmProperties.getInstance().store(new FileOutputStream(file), null);
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			log.info(e.getMessage());
 		}
 		
 	}

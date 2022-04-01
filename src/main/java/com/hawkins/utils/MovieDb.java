@@ -2,9 +2,9 @@ package com.hawkins.utils;
 
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MovieDb implements Runnable {
 	
 	private String url = "";
@@ -13,7 +13,6 @@ public class MovieDb implements Runnable {
 	private String personURL = "";
 	private String discoverURL = "";
 	
-	private static final Logger logger = LogManager.getLogger(MovieDb.class.getName());
 
 	private static MovieDb thisInstance = null;
 	
@@ -31,7 +30,7 @@ public class MovieDb implements Runnable {
 	
 	public static synchronized MovieDb getInstance()
 	{
-		logger.debug("Requesting M3UPlayList instance");
+		log.debug("Requesting M3UPlayList instance");
 
 		if (MovieDb.thisInstance == null)
 		{

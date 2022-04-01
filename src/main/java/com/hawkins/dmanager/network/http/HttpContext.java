@@ -13,15 +13,14 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509ExtendedTrustManager;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.CredentialManager;
 import com.hawkins.dmanager.network.ICredentialManager;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HttpContext {
 	
-	private static final Logger logger = LogManager.getLogger(HttpContext.class.getName());
 
 	private boolean init = false;
 	private SSLContext sslContext;
@@ -49,7 +48,7 @@ public class HttpContext {
 
 	public void init() {
 		if (!init) {
-			logger.info("Context initialized");
+			log.info("Context initialized");
 			System.setProperty("http.auth.preference", "ntlm");
 			try {
 				try {
@@ -131,7 +130,7 @@ public class HttpContext {
 				sslContext.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 			} catch (Exception e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 
 			Authenticator.setDefault(new Authenticator() {

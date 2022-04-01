@@ -13,21 +13,20 @@ import java.nio.file.StandardCopyOption;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.input.ReversedLinesFileReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 
 import com.hawkins.dmanager.DownloadEntry;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FileUtils {
 
 	private FileUtils() {
 
 	}
 
-	private static final Logger logger = LogManager.getLogger(FileUtils.class.getName());
 
 	public static void copyToriginalFileName (DownloadEntry d) {
 
@@ -41,8 +40,8 @@ public class FileUtils {
 			Files.deleteIfExists(copied);
 
 		} catch (IOException ioe) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(ioe.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(ioe.getMessage());
 			}
 		}
 

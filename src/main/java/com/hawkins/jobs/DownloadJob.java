@@ -6,17 +6,17 @@ import java.net.URLConnection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
 import com.hawkins.utils.Constants;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DownloadJob implements DetailedJob {
 
-	private static final Logger logger = LogManager.getLogger(DownloadJob.class.getName());
 	
 	private SimpMessagingTemplate template;
 
@@ -119,8 +119,8 @@ public class DownloadJob implements DetailedJob {
 
 			fileLength = Long.parseLong(u.getHeaderField("Content-Length"));
 		} catch (NumberFormatException | IOException nfe) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(nfe.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(nfe.getMessage());
 			}
 		}
 		

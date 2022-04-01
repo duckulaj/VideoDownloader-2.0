@@ -1,14 +1,13 @@
 package com.hawkins.dmanager.downloaders.metadata;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerConstants;
 import com.hawkins.dmanager.network.http.HeaderCollection;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DashMetadata extends HttpMetadata {
 	
-	private static final Logger logger = LogManager.getLogger(DashMetadata.class.getName());
 
 	private String url2;
 	private long len1, len2;
@@ -16,7 +15,7 @@ public class DashMetadata extends HttpMetadata {
 
 	@Override
 	public HttpMetadata derive() {
-		logger.info("derive dash metadata");
+		log.info("derive dash metadata");
 		DashMetadata md = new DashMetadata();
 		md.setHeaders(this.getHeaders());
 		md.setHeaders2(this.getHeaders2());

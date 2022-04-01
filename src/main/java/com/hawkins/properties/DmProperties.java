@@ -4,15 +4,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.utils.Constants;
 import com.hawkins.utils.Utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DmProperties implements Runnable {
 	
-	private static final Logger logger = LogManager.getLogger(DmProperties.class.getName());
 
 	private static DmProperties thisInstance = null;
 	
@@ -55,8 +54,8 @@ public class DmProperties implements Runnable {
 	public DmProperties () {
 		props = Utils.readProperties(Constants.DMPROPERTIES);
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("props.size = {}", props.size());
+		if (log.isDebugEnabled()) {
+			log.debug("props.size = {}", props.size());
 		}
 		
 		this.setMonitoring(Boolean.valueOf(props.get("monitoring").toString()));
@@ -96,7 +95,7 @@ public class DmProperties implements Runnable {
 
 	public static synchronized DmProperties getInstance()
 	{
-		logger.debug("Requesting M3UPlayList instance");
+		log.debug("Requesting M3UPlayList instance");
 
 		if (DmProperties.thisInstance == null)
 		{
@@ -116,8 +115,8 @@ public class DmProperties implements Runnable {
 		try {
 			this.props.store(fos, other);
 		} catch (IOException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(e.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage());
 			}
 		}
 	}

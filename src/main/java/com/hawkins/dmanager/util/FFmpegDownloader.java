@@ -9,8 +9,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DownloadListener;
@@ -18,9 +16,11 @@ import com.hawkins.dmanager.DownloadWindowListener;
 import com.hawkins.dmanager.downloaders.http.HttpDownloader;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FFmpegDownloader implements DownloadListener, DownloadWindowListener, FFExtractCallback {
 	
-	private static final Logger logger = LogManager.getLogger(FFmpegDownloader.class.getName());
 
 	HttpDownloader d;
 	// DownloadWindow wnd;
@@ -112,20 +112,20 @@ public class FFmpegDownloader implements DownloadListener, DownloadWindowListene
 	}
 
 	private void deleteTmpFiles(String id) {
-		logger.info("Deleting metadata for " + id);
+		log.info("Deleting metadata for " + id);
 		File mf = new File(Config.getInstance().getMetadataFolder(), id);
 		boolean deleted = mf.delete();
-		logger.info("Deleted manifest " + id + " " + deleted);
+		log.info("Deleted manifest " + id + " " + deleted);
 		File df = new File(Config.getInstance().getTemporaryFolder(), id);
 		File[] files = df.listFiles();
 		if (files != null && files.length > 0) {
 			for (File f : files) {
 				deleted = f.delete();
-				logger.info("Deleted tmp file " + id + " " + deleted);
+				log.info("Deleted tmp file " + id + " " + deleted);
 			}
 		}
 		deleted = df.delete();
-		logger.info("Deleted tmp folder " + id + " " + deleted);
+		log.info("Deleted tmp folder " + id + " " + deleted);
 	}
 
 	// FFmpegExtractorWnd wnd2;
@@ -160,14 +160,14 @@ public class FFmpegDownloader implements DownloadListener, DownloadWindowListene
 			input.delete();
 			// wnd2.dispose();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		} finally {
 			try {
 				zipIn.close();
 				if (out != null)
 					out.close();
 			} catch (Exception e) {
-				logger.info(e);
+				log.info(e.getMessage());
 			}
 		}
 	}

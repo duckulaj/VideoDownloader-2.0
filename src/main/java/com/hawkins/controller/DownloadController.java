@@ -10,8 +10,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -43,10 +41,13 @@ import com.hawkins.utils.Constants;
 import com.hawkins.utils.MovieDb;
 import com.hawkins.utils.Utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class DownloadController {
 
-	private static final Logger logger = LogManager.getLogger(DownloadController.class.getName());
+	
 	
 	@Qualifier("taskExecutor")
 	@Autowired
@@ -88,11 +89,11 @@ public class DownloadController {
 	// @RequestMapping(path = "/", method = RequestMethod.GET)
 	public String initial(Model model, Device device, SitePreference sitePreference) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("initial :: Device is {}", device.getDevicePlatform());
-			logger.debug("initial :: Mobile is {}", device.isMobile());
-			logger.debug("initial :: Normal is {}", device.isNormal());
-			logger.debug("initial :: Tablet is {}", device.isTablet());
+		if (log.isDebugEnabled()) {
+			log.debug("initial :: Device is {}", device.getDevicePlatform());
+			log.debug("initial :: Mobile is {}", device.isMobile());
+			log.debug("initial :: Normal is {}", device.isNormal());
+			log.debug("initial :: Tablet is {}", device.isTablet());
 		}
 		model.addAttribute(Constants.GROUPS, M3UParser.sortGrouplist(grouplist.getGroupList()));
 		model.addAttribute(Constants.SELECTEDGROUP, new M3UGroup());
@@ -107,8 +108,8 @@ public class DownloadController {
 	@GetMapping("/downloadSubmit")
 	public String downloadSubmit(Model model, @ModelAttribute(Constants.SELECTEDGROUP) M3UGroup selectedGroup) {
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug(selectedGroup.getName());
+		if (log.isDebugEnabled()) {
+			log.debug(selectedGroup.getName());
 		}
 		
 		if (!selectedGroup.getName().isEmpty()) {
@@ -136,8 +137,8 @@ public class DownloadController {
 	public String searchFilter(Model model,
 			@RequestParam(value = "searchFilter", required = false) String searchFilter) {
 
-		if (logger.isDebugEnabled() ) {
-			logger.debug("searchFilter is {}", searchFilter);
+		if (log.isDebugEnabled() ) {
+			log.debug("searchFilter is {}", searchFilter);
 		}
 		
 		if (!searchFilter.isEmpty()) {
@@ -156,8 +157,8 @@ public class DownloadController {
 	public String searchPerson(Model model,
 			@RequestParam(value = "searchPerson", required = false) String searchPerson) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("searchPerson is {}", searchPerson);
+		if (log.isDebugEnabled()) {
+			log.debug("searchPerson is {}", searchPerson);
 		}
 		if (!searchPerson.isEmpty()) {
 			model.addAttribute(Constants.FILMS, M3UParser.sortPlaylist(M3UPlayList.getInstance().searchplayListByActor(searchPerson)));
@@ -175,8 +176,8 @@ public class DownloadController {
 	public String searchYear(Model model,
 			@RequestParam(value = "searchYear", required = false) String searchYear) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("searchYear is {}", searchYear);
+		if (log.isDebugEnabled()) {
+			log.debug("searchYear is {}", searchYear);
 		}
 		
 		if (!searchYear.isEmpty()) {
@@ -209,8 +210,8 @@ public class DownloadController {
 	public String download(Model model, @RequestParam String name, HttpServletResponse response,
 			HttpServletRequest request) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("download {}", name);
+		if (log.isDebugEnabled()) {
+			log.debug("download {}", name);
 		}
 
 		try {
@@ -222,13 +223,13 @@ public class DownloadController {
 			try {
 				length = Long.parseLong(u.getHeaderField("Content-Length"));
 			} catch (NumberFormatException nfe) {
-				logger.debug(nfe.getMessage());
+				log.debug(nfe.getMessage());
 			}
 			String type = u.getHeaderField("Content-Type");
 			String lengthString = Utils.format(length, 2);
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("File of type {} is {}", type, lengthString);
+			if (log.isDebugEnabled()) {
+				log.debug("File of type {} is {}", type, lengthString);
 			}
 
 			M3UDownloadItem downloadItem = new M3UDownloadItem();
@@ -252,9 +253,9 @@ public class DownloadController {
 			model.addAttribute(Constants.SELECTEDGROUP, new M3UGroup());
 
 		} catch (IOException ioe) {
-			logger.info(ioe.getMessage());
+			log.info(ioe.getMessage());
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			log.info(e.getMessage());
 		}
 
 		return Constants.STATUS;

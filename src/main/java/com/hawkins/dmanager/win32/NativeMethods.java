@@ -2,14 +2,13 @@ package com.hawkins.dmanager.win32;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.util.DManagerUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class NativeMethods {
 	
-	private static final Logger logger = LogManager.getLogger(NativeMethods.class.getName());
 
 	private static NativeMethods _me;
 
@@ -25,7 +24,7 @@ public class NativeMethods {
 		try {
 			System.load(dllPath);
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 

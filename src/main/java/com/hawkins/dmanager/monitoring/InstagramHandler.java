@@ -8,17 +8,16 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.DManagerApp;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
-import com.hawkins.dmanager.util.StringUtils;
 import com.hawkins.dmanager.util.DManagerUtils;
+import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class InstagramHandler {
 	
-	private static final Logger logger = LogManager.getLogger(InstagramHandler.class.getName());
 
 	private static Pattern pattern;
 
@@ -35,7 +34,7 @@ public class InstagramHandler {
 				buf.append(ln + "\n");
 			}
 			in.close();
-			logger.info("Parsing instagram page...");
+			log.info("Parsing instagram page...");
 			if (pattern == null) {
 				pattern = Pattern.compile("\"video\\_url\"\\s*:\\s*\"(.*?)\"");
 			}
@@ -44,7 +43,7 @@ public class InstagramHandler {
 				// int start = matcher.start();
 				// int end = matcher.end();
 				String url = matcher.group(1);
-				logger.info("Url: " + url);
+				log.info("Url: " + url);
 				HttpMetadata metadata = new HttpMetadata();
 				metadata.setUrl(url);
 				metadata.setHeaders(data.getRequestHeaders());
@@ -62,7 +61,7 @@ public class InstagramHandler {
 			}
 			return true;
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 			return false;
 		}
 	}

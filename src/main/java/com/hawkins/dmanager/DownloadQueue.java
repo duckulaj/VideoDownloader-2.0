@@ -3,14 +3,12 @@ package com.hawkins.dmanager;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 
-
+@Slf4j
 public class DownloadQueue {
 	
-	private static final Logger logger = LogManager.getLogger(DownloadQueue.class.getName());
 	private boolean running;
 	private String queueId;
 	private int index;
@@ -57,7 +55,7 @@ public class DownloadQueue {
 	}
 
 	public synchronized void next() {
-		logger.info(queueId + " attmpting to process next item");
+		log.info(queueId + " attmpting to process next item");
 		if (!running)
 			return;
 		int c = 0;
@@ -65,7 +63,7 @@ public class DownloadQueue {
 		if (queuedItems == null)
 			return;
 		if (app.queueItemPending(queueId)) {
-			logger.info(queueId + " not processing as has already pending download");
+			log.info(queueId + " not processing as has already pending download");
 			return;
 		}
 		if (currentItemId != null) {
@@ -73,12 +71,12 @@ public class DownloadQueue {
 			if (ent != null) {
 				int state = ent.getState();
 				if (!(state == DManagerConstants.FAILED || state == DManagerConstants.PAUSED || state == DManagerConstants.FINISHED)) {
-					logger.info(queueId + " not processing as has already active download");
+					log.info(queueId + " not processing as has already active download");
 					return;
 				}
 			}
 		}
-		logger.info(queueId + " total queued " + queuedItems.size());
+		log.info(queueId + " total queued " + queuedItems.size());
 		if (!(index < queuedItems.size())) {
 			index = 0;
 		}
@@ -88,7 +86,7 @@ public class DownloadQueue {
 			if (ent != null) {
 				int state = ent.getState();
 				if (state == DManagerConstants.FAILED || state == DManagerConstants.PAUSED) {
-					logger.info("index: " + index + " c: " + c);
+					log.info("index: " + index + " c: " + c);
 					currentItemId = id;
 					index++;
 					ent.setStartedByUser(false);
@@ -125,7 +123,7 @@ public class DownloadQueue {
 
 	public void addToQueue(String id) {
 		if (!queuedItems.contains(id)) {
-			logger.debug(id + " added to " + queueId);
+			log.debug(id + " added to " + queueId);
 			queuedItems.add(id);
 			DownloadEntry ent = DManagerApp.getInstance().getEntry(id);
 			if (ent != null) {

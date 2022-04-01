@@ -13,14 +13,13 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.network.http.WebProxy;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class AutoProxyHandler {
 	
-	private static final Logger logger = LogManager.getLogger(AutoProxyHandler.class.getName());
 
 	private ScriptEngine engine;
 	private boolean init;
@@ -46,18 +45,18 @@ public class AutoProxyHandler {
 	}
 
 	public WebProxy getProxyForUrl(String url) {
-		logger.info("Calling getProxyForUrl('" + url + "')");
+		log.info("Calling getProxyForUrl('" + url + "')");
 		try {
 			URL u = new URL(url);
 			ProxyInfo info = findProxyForUrl(url, u.getHost());
 			if (info == null || info.isDirect()) {
 				return null;
 			} else {
-				logger.info("Proxy (" + info.getProxy() + ":" + info.getPort() + ") for url: " + url);
+				log.info("Proxy (" + info.getProxy() + ":" + info.getPort() + ") for url: " + url);
 				return new WebProxy(info.getProxy(), info.getPort());
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 		return null;
 	}
@@ -104,7 +103,7 @@ public class AutoProxyHandler {
 	}
 
 	private String loadPacScript() throws IOException {
-		logger.info("Loading PAC script");
+		log.info("Loading PAC script");
 		InputStream pacStram = new URL(pacUrl).openStream();
 		StringBuilder sb = new StringBuilder();
 		byte[] buf = new byte[512];
@@ -115,7 +114,7 @@ public class AutoProxyHandler {
 			}
 			sb.append(new String(buf, 0, x));
 		}
-		logger.info("Done loading PAC script");
+		log.info("Done loading PAC script");
 		return sb.toString();
 	}
 
@@ -130,7 +129,7 @@ public class AutoProxyHandler {
 	}
 
 	private void init() throws ScriptException, IOException {
-		logger.info("Initializing PAC Handler");
+		log.info("Initializing PAC Handler");
 		ScriptEngineManager mgr = new ScriptEngineManager(null);
 		engine = mgr.getEngineByName("js");
 		engine.put("obj", this);
@@ -169,12 +168,12 @@ public class AutoProxyHandler {
 		this.autoProxyScript.append(
 				"function weekdayRange(wd1, wd2, gmt){\nif (typeof wd1 == 'undefined') \nreturn false;\nelse if (typeof wd2 == 'undefined' || _isGmt(wd2)) \nreturn _weekdayRange(wd1, wd1, _isGmt(wd2)); \nelse \nreturn _weekdayRange(wd1, wd2, _isGmt(gmt)); }\nfunction _weekdayRange(wd1, wd2, gmt) {\nif (typeof wd1 != 'string' || typeof wd2 != 'string' || typeof gmt != 'boolean') return false; \nvar w1 = -1, w2 = -1;\nfor (var i=0; i < _day.length; i++) {\nif (_day[i] == wd1)\nw1 = i;\nif (_day[i] == wd2)\nw2 = i; }\nvar cur = new Date();\nif (gmt == true)\ncur = new Date(cur.getTime() - cur.getTimezoneOffset() * 60 * 1000);\nvar w3 = cur.getDay();\nif (w1 > w2)\nw2 = w2 + 7;\nif (w1 > w3)\nw3 = w3 + 7;\nreturn (w1 <= w3 && w3 <= w2); }");
 		this.autoProxyScript.append(" function alert() {} ");
-		logger.info("Executing builtin PAC functions");
+		log.info("Executing builtin PAC functions");
 		engine.eval(this.autoProxyScript.toString());
 		ScriptEngineFactory sef = engine.getFactory();
 		System.out.println(sef.getMethodCallSyntax("obj", "dnsResolve", "string"));
 		engine.eval("obj.dnsResolve('')");
-		logger.info("Done executing builtin PAC functions");
+		log.info("Done executing builtin PAC functions");
 	}
 
 	public String dnsResolve(String paramString) {

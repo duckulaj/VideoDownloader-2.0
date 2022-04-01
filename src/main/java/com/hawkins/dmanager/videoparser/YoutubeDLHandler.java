@@ -7,14 +7,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class YoutubeDLHandler {
 	
-	private static final Logger logger = LogManager.getLogger(YoutubeDLHandler.class.getName());
 
 	private Process proc;
 	private int exitCode;
@@ -70,7 +69,7 @@ public class YoutubeDLHandler {
 				this.title = title.toString();
 			}
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 
 	}
@@ -99,7 +98,7 @@ public class YoutubeDLHandler {
 		try {
 			proc.destroy();
 		} catch (Exception e) {
-			logger.info(e);
+			log.info(e.getMessage());
 		}
 	}
 }

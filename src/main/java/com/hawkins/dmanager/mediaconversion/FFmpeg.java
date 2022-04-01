@@ -6,15 +6,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FFmpeg {
 	
-	private static final Logger logger = LogManager.getLogger(FFmpeg.class.getName());
 
 	public final static int FF_NOT_FOUND = 10, FF_LAUNCH_ERROR = 20, FF_CONVERSION_FAILED = 30, FF_SUCCESS = 0;
 	private MediaFormat outformat;
@@ -39,7 +38,7 @@ public class FFmpeg {
 	public int convert() {
 		try {
 
-			logger.info("Outformat: " + outformat + " audio: " + outformat.isAudioOnly());
+			log.info("Outformat: " + outformat + " audio: " + outformat.isAudioOnly());
 
 			File ffFile = new File(Config.getInstance().getDataFolder(),
 					System.getProperty("os.name").toLowerCase().contains("windows") ? "ffmpeg.exe" : "ffmpeg");
@@ -89,7 +88,7 @@ public class FFmpeg {
 			args.add("-y");
 
 			for (String s : args) {
-				logger.info("@ffmpeg_args: " + s);
+				log.info("@ffmpeg_args: " + s);
 			}
 
 			ProcessBuilder pb = new ProcessBuilder(args);
@@ -106,7 +105,7 @@ public class FFmpeg {
 					String text = ln.trim();
 					processOutput(text);
 				} catch (Exception e) {
-					logger.info(e);
+					log.info(e.getMessage());
 				}
 			}
 
@@ -153,11 +152,11 @@ public class FFmpeg {
 				index1 = text.indexOf('=', index1);
 				int index2 = text.indexOf("bitrate=");
 				String dur = text.substring(index1 + 1, index2).trim();
-				logger.info("Parsing duration: " + dur);
+				log.info("Parsing duration: " + dur);
 				long t = parseDuration(dur);
-				logger.info("Duration: " + t + " Total duration: " + totalDuration);
+				log.info("Duration: " + t + " Total duration: " + totalDuration);
 				int prg = (int) ((t * 100) / totalDuration);
-				logger.info("ffmpeg prg: " + prg);
+				log.info("ffmpeg prg: " + prg);
 				listener.progress(prg);
 			}
 		}
@@ -169,11 +168,11 @@ public class FFmpeg {
 					index1 = text.indexOf(':', index1);
 					int index2 = text.indexOf(",", index1);
 					String dur = text.substring(index1 + 1, index2).trim();
-					logger.info("Parsing duration: " + dur);
+					log.info("Parsing duration: " + dur);
 					totalDuration = parseDuration(dur);
-					logger.info("Total duration: " + totalDuration);
+					log.info("Total duration: " + totalDuration);
 				} catch (Exception e) {
-					logger.info(e);
+					log.info(e.getMessage());
 					totalDuration = -1;
 				}
 			}
