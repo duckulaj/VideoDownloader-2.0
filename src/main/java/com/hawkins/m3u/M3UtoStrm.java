@@ -269,10 +269,14 @@ public class M3UtoStrm {
 				folder = folder.replace(Constants.UHD, "").trim();
 			}
 			try {
-				String newFolder = folder;
-				String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
-				File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
-				writeToFile(thisFile, url);
+				if (!folder.contains(Constants.ADULT)) { // Exclude Adult XXX
+				
+					String newFolder = folder;
+					String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
+					File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
+					writeToFile(thisFile, url);
+				
+				}
 			} catch (IOException ioe) {
 				ioe.getMessage();
 			}
