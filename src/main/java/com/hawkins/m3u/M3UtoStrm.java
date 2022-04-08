@@ -257,6 +257,7 @@ public class M3UtoStrm {
 				
 		movies.forEach(movie -> {
 			
+			String groupTitle = movie.getGroupTitle();
 			String folder = movie.getName().trim();
 			folder = folder.replace("/", " ").trim();
 			
@@ -268,7 +269,7 @@ public class M3UtoStrm {
 				folder = folder.replace(Constants.UHD, "").trim();
 			}
 			try {
-				if (!folder.contains(Constants.ADULT)) { // Exclude Adult XXX
+				if (!groupTitle.contains(Constants.ADULT)) { // Exclude Adult
 				
 					String newFolder = folder;
 					String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
