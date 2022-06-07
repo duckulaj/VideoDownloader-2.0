@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerConstants;
@@ -44,7 +45,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 	public void start() {
 		log.info("creating folder {}", folder);
 		new File(folder).mkdirs();
-		chunks = new ArrayList<Segment>();
+		chunks = new LinkedList<Segment>();
 		try {
 			Segment c1 = new SegmentImpl(this, folder);
 			// handle case of single dash stream
@@ -443,7 +444,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 
 	private boolean restoreState() {
 
-		chunks = new ArrayList<Segment>();
+		chunks = new LinkedList<Segment>();
 		File file = new File(folder, "state.txt");
 		if (!file.exists()) {
 			file = getBackupFile(folder);

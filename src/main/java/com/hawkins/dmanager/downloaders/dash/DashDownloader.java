@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.hawkins.dmanager.Config;
@@ -60,7 +61,7 @@ public class DashDownloader extends Downloader implements SegmentListener, Media
 		new File(folder).mkdirs();
 		this.lastDownloaded = downloaded;
 		this.prevTime = System.currentTimeMillis();
-		chunks = new ArrayList<Segment>();
+		chunks = new LinkedList<Segment>();
 		try {
 			Segment c1 = new SegmentImpl(this, folder);
 			c1.setTag("T1");
@@ -542,7 +543,7 @@ public class DashDownloader extends Downloader implements SegmentListener, Media
 
 	private boolean restoreState() {
 		BufferedReader br = null;
-		chunks = new ArrayList<Segment>();
+		chunks = new LinkedList<Segment>();
 		File file = new File(folder, "state.txt");
 		if (!file.exists()) {
 			file = getBackupFile(folder);

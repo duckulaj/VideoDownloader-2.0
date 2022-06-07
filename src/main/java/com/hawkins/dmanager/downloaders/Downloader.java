@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -50,7 +51,7 @@ public abstract class Downloader implements SegmentListener {
 
 	protected String OriginalFileName;
 	
-	public ArrayList<Segment> chunks;
+	public LinkedList<Segment> chunks;
 
 	public abstract void start();
 

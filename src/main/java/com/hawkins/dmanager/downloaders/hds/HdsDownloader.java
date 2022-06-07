@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.DManagerConstants;
@@ -36,7 +37,7 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 	
 
 	private HdsMetadata metadata;
-	private ArrayList<String> urlList;
+	private LinkedList<String> urlList;
 	private Segment manifestSegment;
 	private long totalAssembled;
 	private String newFileName;
@@ -54,8 +55,8 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 		this.length = -1;
 		this.metadata = metadata;
 		this.maxCount = Config.getInstance().getMaxSegments();
-		urlList = new ArrayList<String>();
-		chunks = new ArrayList<Segment>();
+		urlList = new LinkedList<String>();
+		chunks = new LinkedList<Segment>();
 		this.eta = "---";
 	}
 
@@ -434,7 +435,7 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 
 	private boolean restoreState() {
 		BufferedReader br = null;
-		chunks = new ArrayList<Segment>();
+		chunks = new LinkedList<Segment>();
 		File file = new File(folder, "state.txt");
 		if (!file.exists()) {
 			file = getBackupFile(folder);

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +58,7 @@ public class DownloadController {
 	private SimpMessagingTemplate template;
 
 	private int jobNumber;
-	private ArrayList<DownloadJob> myDownloadList = new ArrayList<>(5);
+	private LinkedList<DownloadJob> myDownloadList = new LinkedList<DownloadJob>();
 
 	@Autowired
 	private DownloadService myService;
@@ -142,7 +143,7 @@ public class DownloadController {
 		}
 		
 		if (!searchFilter.isEmpty()) {
-			List<M3UItem> sortedList = M3UParser.sortPlaylist(M3UPlayList.getInstance().searchplayList(searchFilter));
+			LinkedList<M3UItem> sortedList = M3UParser.sortPlaylist(M3UPlayList.getInstance().searchplayList(searchFilter));
 			model.addAttribute(Constants.FILMS, sortedList);
 		}
 		
@@ -273,7 +274,7 @@ public class DownloadController {
 	@RequestMapping(value = "/status")
 	@ResponseBody
 	@SubscribeMapping("initial")
-	public ArrayList<DownloadJob> fetchStatus() {
+	public LinkedList<DownloadJob> fetchStatus() {
 		return this.myDownloadList; 
 	}
 	
@@ -312,7 +313,7 @@ public class DownloadController {
 	
 	@PostMapping("/removejobs")
 	public String removeJobs() {
-		myDownloadList = (ArrayList<DownloadJob>) Utils.removeJobs(myDownloadList);
+		myDownloadList = (LinkedList<DownloadJob>) Utils.removeJobs(myDownloadList);
 		return Constants.STATUS;
 	}
 	

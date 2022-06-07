@@ -1,6 +1,7 @@
 package com.hawkins.m3u;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.hawkins.properties.DownloadProperties;
@@ -11,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class M3UGroupList {
 	
 
-	private List<M3UGroup> groups = new ArrayList<>();
+	private LinkedList<M3UGroup> groups = new LinkedList<M3UGroup>();
 	private static M3UGroupList thisInstance = null;
 	
 	private DownloadProperties downloadproperties = DownloadProperties.getInstance();
@@ -35,12 +36,12 @@ public class M3UGroupList {
 		return M3UGroupList.thisInstance;
 	}
 	
-	public List<M3UGroup> getGroupList() {
+	public LinkedList<M3UGroup> getGroupList() {
 		return this.groups;
 	}
 	
-	public List<M3UGroup> resetGroupList () {
-		this.groups = new ArrayList<>();
+	public LinkedList<M3UGroup> resetGroupList () {
+		this.groups = new LinkedList<>();
 		this.groups =  M3UParser.sortGrouplist(M3UParser.getM3UGroupsFromFile(downloadproperties.getFullM3U()));
 		return this.groups;
 	}

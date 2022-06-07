@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.hawkins.dmanager.Config;
@@ -36,7 +37,7 @@ public class HlsDownloader extends Downloader implements SegmentListener, MediaC
 	
 
 	private HlsMetadata metadata;
-	private ArrayList<String> urlList;
+	private LinkedList<String> urlList;
 	private Segment manifestSegment;
 	private long totalAssembled;
 	private String newFileName;
@@ -51,8 +52,8 @@ public class HlsDownloader extends Downloader implements SegmentListener, MediaC
 		this.length = -1;
 		this.metadata = metadata;
 		this.maxCount = Config.getInstance().getMaxSegments();
-		urlList = new ArrayList<String>();
-		chunks = new ArrayList<Segment>();
+		urlList = new LinkedList<String>();
+		chunks = new LinkedList<Segment>();
 		this.eta = "---";
 	}
 
@@ -419,7 +420,7 @@ public class HlsDownloader extends Downloader implements SegmentListener, MediaC
 
 	private boolean restoreState() {
 		BufferedReader br = null;
-		chunks = new ArrayList<Segment>();
+		chunks = new LinkedList<Segment>();
 		File file = new File(folder, "state.txt");
 		if (!file.exists()) {
 			file = getBackupFile(folder);

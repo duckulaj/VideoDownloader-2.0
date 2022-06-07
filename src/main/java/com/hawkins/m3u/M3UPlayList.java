@@ -2,6 +2,7 @@ package com.hawkins.m3u;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class M3UPlayList implements Runnable {
 
-	private List<M3UItem> items = new ArrayList<>();
+	private LinkedList<M3UItem> items = new LinkedList<M3UItem>();
 	private static M3UPlayList thisInstance = null;
 
 	public M3UPlayList() {
@@ -45,7 +46,7 @@ public class M3UPlayList implements Runnable {
 
 	public List<M3UItem> filterPlayList(String group) {
 
-		List<M3UItem> sortedItems = new ArrayList<>();
+		LinkedList<M3UItem> sortedItems = new LinkedList<M3UItem>();
 
 		Iterator<M3UItem> it = this.items.iterator();
 
@@ -59,9 +60,9 @@ public class M3UPlayList implements Runnable {
 		return M3UParser.sortPlaylist(sortedItems);
 	}
 
-	public List<M3UItem> searchplayList(String filter) {
+	public LinkedList<M3UItem> searchplayList(String filter) {
 
-		List<M3UItem> foundItems = new ArrayList<>();
+		LinkedList<M3UItem> foundItems = new LinkedList<M3UItem>();
 
 		Iterator<M3UItem> it = this.items.iterator();
 
@@ -75,7 +76,7 @@ public class M3UPlayList implements Runnable {
 		return foundItems;
 	}
 
-	public List<M3UItem> searchplayListByActor(String filter) {
+	public LinkedList<M3UItem> searchplayListByActor(String filter) {
 
 		JsonObject obj = Utils.searchplayListByActor(filter);
 		JsonArray actors = (JsonArray) obj.get("results"); 
@@ -116,7 +117,7 @@ public class M3UPlayList implements Runnable {
 
 		}
 
-		List<M3UItem> foundItems = new ArrayList<>();
+		LinkedList<M3UItem> foundItems = new LinkedList<M3UItem>();
 
 		Iterator<M3UItem> it = this.items.iterator();
 
@@ -130,7 +131,7 @@ public class M3UPlayList implements Runnable {
 		return foundItems;
 	}
 
-	public List<M3UItem> searchplayListByYear(String filter) {
+	public LinkedList<M3UItem> searchplayListByYear(String filter) {
 
 		JsonObject obj = Utils.searchplayListByYear(filter);
 		JsonArray moviesForYear = (JsonArray) obj.get("results"); 
@@ -142,14 +143,14 @@ public class M3UPlayList implements Runnable {
 
 		Iterator<JsonElement> moviesIt = moviesForYear.iterator();
 
-		List<String> movies = new ArrayList<>();
+		LinkedList<String> movies = new LinkedList<String>();
 		while (moviesIt.hasNext()) {
 			JsonObject movie = moviesIt.next().getAsJsonObject();
 
 			movies.add(movie.get("title").getAsString());
 		}
 
-		List<M3UItem> foundItems = new ArrayList<>();
+		LinkedList<M3UItem> foundItems = new LinkedList<M3UItem>();
 
 		Iterator<M3UItem> it = this.items.iterator();
 
@@ -164,12 +165,12 @@ public class M3UPlayList implements Runnable {
 		return foundItems;
 	}
 
-	public List<M3UItem> getPlayList() {
+	public LinkedList<M3UItem> getPlayList() {
 		return this.items;
 	}
 
 
-	public List<M3UItem> getRows() {
+	public LinkedList<M3UItem> getRows() {
 		return this.items;
 	}
 

@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +21,9 @@ public class M3UParser {
 		
 	}
 	
-	static List<M3UItem> getAllM3UListFromFile(String m3uFile) {
+	static LinkedList<M3UItem> getAllM3UListFromFile(String m3uFile) {
 		long start = System.currentTimeMillis();
-		List<M3UItem> m3uList = new ArrayList<>();
+		LinkedList<M3UItem> m3uList = new LinkedList<M3UItem>();
 		
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(m3uFile))) {
 	
@@ -64,9 +66,9 @@ public class M3UParser {
 		return m3uList;
 	}
 
-	static List<M3UGroup> getM3UGroupsFromFile(String m3uFile) {
+	static LinkedList<M3UGroup> getM3UGroupsFromFile(String m3uFile) {
 		long start = System.currentTimeMillis();
-		List<M3UGroup> m3uGroupList = new ArrayList<>();
+		LinkedList<M3UGroup> m3uGroupList = new LinkedList<M3UGroup>();
 
 
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(m3uFile))) {
@@ -127,7 +129,7 @@ public class M3UParser {
 			}
 		}
 
-		List<M3UGroup> sortedGroups = sortGrouplist(m3uGroupList);
+		LinkedList<M3UGroup> sortedGroups = sortGrouplist(m3uGroupList);
 		
 		if (log.isDebugEnabled()) {
 			log.debug("Found {} groups", m3uGroupList.size());
@@ -137,17 +139,26 @@ public class M3UParser {
 		return sortGrouplist(sortedGroups);
 	}
 	
-	public static List<M3UItem> sortPlaylist(List<M3UItem> playlist) {
-		return playlist.stream()
-			  .sorted(Comparator.comparing(M3UItem::getName))
-			  .collect(Collectors.toList());
-	
+	public static LinkedList<M3UItem> sortPlaylist(LinkedList<M3UItem> playlist) {
+		/*
+		 * return playlist.stream() .sorted(Comparator.comparing(M3UItem::getName))
+		 * .collect(Collectors.toList());
+		 */
+
+		playlist.sort(Comparator.comparing(M3UItem::getName));
+		return playlist;
 	}
 	
-	public static List<M3UGroup> sortGrouplist(List<M3UGroup> grouplist) {
-		return grouplist.stream()
-			  .sorted(Comparator.comparing(M3UGroup::getName))
-			  .collect(Collectors.toList());
+	public static LinkedList<M3UGroup> sortGrouplist(LinkedList<M3UGroup> grouplist) {
+		/*
+		 * return (LinkedList<M3UGroup>) grouplist.stream()
+		 * .sorted(Comparator.comparing(M3UGroup::getName))
+		 * .collect(Collectors.toList());
+		 */
+		
+		grouplist.sort(Comparator.comparing(M3UGroup::getName));
+		
+		return grouplist;
 		
 	}
 	

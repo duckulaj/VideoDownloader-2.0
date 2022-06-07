@@ -14,8 +14,8 @@ import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -207,9 +207,9 @@ public class Utils {
 
 	}
 
-	public static List<DownloadJob> removeJobs(List<DownloadJob> jobs) {
+	public static LinkedList<DownloadJob> removeJobs(LinkedList<DownloadJob> jobs) {
 
-		ArrayList<DownloadJob> runningJobs = new ArrayList<>();
+		LinkedList<DownloadJob> runningJobs = new LinkedList<>();
 
 		ListIterator<DownloadJob> iJobs = jobs.listIterator();
 
