@@ -32,6 +32,8 @@ public class DownloadProperties implements Runnable {
 	private String searchMovieURL = null;
 	private String resetM3UFileSchedule = null;
 	private String createStreamsSchedule = null;
+	private String epgFileName = null;
+	private String fileWatcherLocation=null;
 
 	public DownloadProperties() {
 
@@ -52,6 +54,8 @@ public class DownloadProperties implements Runnable {
 		this.setMovieDbAPI(props.getProperty("moviedb.apikey"));
 		this.setMovieDbURL(props.getProperty("moviedb.searchURL"));
 		this.setSearchMovieURL(props.getProperty("moviedb.searchMovieURL"));
+		this.setEpgFileName(props.getProperty("epg.filename"));
+		this.setFileWatcherLocation(props.getProperty("fileWatcher.location"));
 
 	}
 
@@ -165,6 +169,22 @@ public class DownloadProperties implements Runnable {
 
 	public void setSearchMovieURL(String searchMovieURL) {
 		this.searchMovieURL = searchMovieURL;
+	}
+
+	public String getEpgFileName() {
+		return epgFileName;
+	}
+
+	public void setEpgFileName(String epgFileName) {
+		this.epgFileName = epgFileName;
+	}
+
+	public String getFileWatcherLocation() {
+		return fileWatcherLocation;
+	}
+
+	public void setFileWatcherLocation(String fileWatcherLocation) {
+		this.fileWatcherLocation = fileWatcherLocation;
 	}
 
 }

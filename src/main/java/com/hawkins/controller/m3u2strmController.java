@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.hawkins.epg.EpgReader;
 import com.hawkins.m3u.M3UGroup;
 import com.hawkins.m3u.M3UGroupList;
 import com.hawkins.m3u.M3UParser;
@@ -33,6 +34,9 @@ public class m3u2strmController {
 	@GetMapping("/convertToStream") public String convertM3UtoStream(Model model) {
 		
 		log.info("Starting convertM3UtoStream()");
+		
+		EpgReader epgReader = new EpgReader();
+		epgReader.changeLocalTime();
 		
 		M3UtoStrm.convertM3UtoStream();
 		
