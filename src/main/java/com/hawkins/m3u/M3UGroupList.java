@@ -21,7 +21,8 @@ public class M3UGroupList {
 
 		// DownloadProperties downloadproperties = DownloadProperties.getInstance();
 		
-		this.groups =  M3UParser.sortGrouplist(M3UParser.getM3UGroupsFromFile(downloadproperties.getFullM3U()));
+		// this.groups =  M3UParser.sortGrouplist(M3UParser.getM3UGroupsFromFile(downloadproperties.getFullM3U()));
+		this.groups = M3UParser.getM3UGroupsFromFile(downloadproperties.getFullM3U());
 	}
 
 	public static synchronized M3UGroupList getInstance()

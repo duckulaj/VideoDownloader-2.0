@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import com.google.gson.JsonObject;
@@ -345,5 +347,18 @@ public class Utils {
 		return stringToReplace;
 	}
 
+	public static boolean containsWords(String inputString, String[] words) {
+	    List<String> inputStringList = Arrays.asList(inputString.split(" "));
+	    List<String> wordsList = Arrays.asList(words);
+
+	    return wordsList.stream().anyMatch(inputStringList::contains);
+	}
+	
+	public static String replaceAndStrip(String thisString, String[] wordsToStrip) {
+		
+		return StringUtils.replaceEach(thisString, wordsToStrip, new String[] {"",""});
+		    
+
+	}
 }
 

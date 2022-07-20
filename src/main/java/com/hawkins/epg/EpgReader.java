@@ -17,6 +17,9 @@ import org.dom4j.io.XMLWriter;
 
 import com.hawkins.properties.DownloadProperties;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class EpgReader {
 	
 	public static DownloadProperties properties = DownloadProperties.getInstance();
@@ -49,7 +52,7 @@ public class EpgReader {
 
 			Element rootElement = document.getRootElement();
 
-			Iterator itProgramme = rootElement.elementIterator("programme");
+			Iterator<Element> itProgramme = rootElement.elementIterator("programme");
 
 			while (itProgramme.hasNext() ) {
 				Element pgmElement = (Element) itProgramme.next();
@@ -67,7 +70,9 @@ public class EpgReader {
 			OutputFormat format = OutputFormat.createPrettyPrint();
 			XMLWriter writer;
 			
-			String outputFile = properties.getDownloadPath() + "/xteveNew.xml";
+			String outputFile = properties.getFileWatcherLocation() + "xteveNew.xml";
+			
+			log.info("Writing {}", outputFile);
 			writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(outputFile)), format);
 			// writer = new XMLWriter(System.out, format);
 			writer.write(document);

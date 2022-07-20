@@ -150,9 +150,10 @@ public class SegmentImpl implements Segment {
 		try {
 			cl.chunkFailed(id, reason);
 		} catch (Exception e) {
-			log.info(reason);
-			log.info(e.getMessage());
-		
+			if (log.isDebugEnabled()) {
+				log.debug(reason);
+				log.debug(e.getMessage());
+			}
 		} finally {
 			cl = null;
 		}

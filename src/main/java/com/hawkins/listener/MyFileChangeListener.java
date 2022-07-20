@@ -16,19 +16,24 @@ public class MyFileChangeListener implements FileChangeListener {
 
 	@Override
 	public void onChange(Set<ChangedFiles> changeSet) {
-		
+
 		DownloadProperties dp = DownloadProperties.getInstance();
 		String epgFile = dp.getEpgFileName();
-		
+
 		for(ChangedFiles cfiles:changeSet) {
 			for(ChangedFile cfile:cfiles.getFiles()) {
-				
+				log.info("Evaluating {}", cfile.getFile().getName());
 				if (cfile.getFile().toString().equals(epgFile)) {
+
+					log.info("Sending {} for changeLocalTime evaluation", cfile.getFile().getName());
+
 					EpgReader.changeLocalTime(epgFile);
+					
+					break;
 				}
-				System.out.println(cfile.getType() + ":" + cfile.getFile().getName());
+
 			}
 		}
-	}
 
+	}
 }

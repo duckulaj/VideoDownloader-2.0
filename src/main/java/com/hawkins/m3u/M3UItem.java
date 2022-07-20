@@ -13,7 +13,7 @@ public class M3UItem {
 	private String movieDbId = "";
 	private boolean downloaded = false;
 	
-	
+	String[] wordsToExclude= {"[4K]","[HD]"};
 
 	public String getId() {
 		return this.id;
@@ -31,7 +31,7 @@ public class M3UItem {
 		
 		Utils.replaceCharacterWithSpace(name);
 		
-		this.name = name;
+		this.name = Utils.replaceAndStrip(name, wordsToExclude);
 	}
 
 	public String getLogo() {

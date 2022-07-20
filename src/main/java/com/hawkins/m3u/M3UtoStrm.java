@@ -27,7 +27,7 @@ public class M3UtoStrm {
 	private static String tvShowRegex = "[S]{1}[0-9]{2} [E]{1}[0-9]{2}";
 	private static String seasonRegex = "[S]{1}[0-9]{2}";
 	
-	public static void convertM3UtoStream () {
+	public static void convertM3UtoStream() {
 
 		/*
 		 * 1. Get an instance of the group list
@@ -66,6 +66,9 @@ public class M3UtoStrm {
 		List<M3UItem> tvshows = filterItems(playlistItems, ofType(Constants.TVSHOW));
 		log.info("{} TV Shows", tvshows.size());
 		
+		List<M3UItem> HDMovies = filterItems(movies, ofTypeDefinition(Constants.HD));
+		log.info("{} HD Movies", HDMovies.size());
+		
 		List<M3UItem> FHDMovies = filterItems(movies, ofTypeDefinition(Constants.FHD));
 		log.info("{} FHD Movies", FHDMovies.size());
 		
@@ -78,8 +81,11 @@ public class M3UtoStrm {
 		String movieFolder = createFolder(Constants.FOLDER_MOVIES) + File.separator;
 		log.info("Created {}", movieFolder);
 		
+		createMovieFolders(movies, Constants.HD);
+		log.info("Created HD Movies folders");
+		
 		createMovieFolders(movies, Constants.SD);
-		log.info("Created Movies folders");
+		log.info("Created SD Movies folders");
 		
 		createMovieFolders(FHDMovies, Constants.FHD);
 		log.info("Created FHD Movies folders");
