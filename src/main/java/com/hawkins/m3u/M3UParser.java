@@ -40,7 +40,7 @@ public class M3UParser {
 					if (valuesInQuotes != null) {
 						M3UItem channel = new M3UItem();
 						channel.setId(valuesInQuotes[0]);
-						channel.setName(valuesInQuotes[1]);
+						channel.setName(normaliseName(valuesInQuotes[1]));
 						if (Utils.containsWords(channel.getName(), countriesToInclude)) {
 								
 							channel.setLogo(valuesInQuotes[2]);
@@ -185,7 +185,7 @@ public class M3UParser {
 
 	}
 
-	private static String normaliseName(String filmName) {
+	public static String normaliseName(String filmName) {
 
 		int startIndex = 0;
 
@@ -200,7 +200,12 @@ public class M3UParser {
 			filmName = filmName.substring(startIndex + 1).trim();
 		}
 
-		return filmName.replace("(MULTISUB)", "").trim();
+		if (filmName.contains("(MULTISUB)")) {
+			return filmName.replace("(MULTISUB)", "").trim();
+		} else {
+			return filmName.trim();
+		}
+		
 	}
 
 	public static M3UGroup getGroupByName(M3UGroupList groups, String groupName) {

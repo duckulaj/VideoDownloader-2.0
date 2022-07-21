@@ -277,7 +277,7 @@ public class M3UtoStrm {
 			try {
 				if (!groupTitle.contains(Constants.ADULT)) { // Exclude Adult
 				
-					String newFolder = folder;
+					String newFolder = M3UParser.normaliseName(folder);
 					String newFolderPath = createFolder(Constants.FOLDER_MOVIES + File.separator + newFolder);
 					File thisFile = new File(newFolderPath + File.separator + folder + ".strm"); 
 					writeToFile(thisFile, url);

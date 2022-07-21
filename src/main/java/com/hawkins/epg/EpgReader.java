@@ -15,6 +15,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
+import com.hawkins.m3u.M3UParser;
 import com.hawkins.properties.DownloadProperties;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,11 @@ public class EpgReader {
 	private static Document document;
 	private static String szEnd = "";
 	private static String szStart = "";
+	private static String szDisplayName = "";
+	
+	private static final String START = "start";
+	private static final String STOP = "stop";
+	private static final String DISPLAY_NAME = "display-name"; 
 	
 	private static Date startTime = null;
 	private static Date endTime = null;
@@ -52,19 +58,40 @@ public class EpgReader {
 
 			Element rootElement = document.getRootElement();
 
+			/*
+			 * For each channel element let's normalise the display-name
+			 */
+			Iterator<Element> itChannel = rootElement.elementIterator("channel");
+			
+			while (itChannel.hasNext()) {
+				Element chnElement = (Element) itChannel.next();
+				Element dElement = chnElement.element(DISPLAY_NAME);
+				
+				szDisplayName = dElement.getStringValue();
+				
+				String szNewDisplayName = formatStr(szDisplayName);
+				dElement.setText(szNewDisplayName);
+				
+			}
+			
+			/*
+			 *  Now we need to make any adjustments to the programme start and end dates
+			 */
+			
+			
 			Iterator<Element> itProgramme = rootElement.elementIterator("programme");
 
 			while (itProgramme.hasNext() ) {
 				Element pgmElement = (Element) itProgramme.next();
 
-				szStart = pgmElement.attribute("start").getStringValue();
-				szEnd = pgmElement.attribute("stop").getStringValue();
+				szStart = pgmElement.attribute(START).getStringValue();
+				szEnd = pgmElement.attribute(STOP).getStringValue();
 			
 				String szNewStart = szStart.replace("+0000", "+0200");
 				String szNewEnd = szEnd.replace("+0000", "+0200");
 				
-				pgmElement.attribute("start").setText(szNewStart);
-				pgmElement.attribute("stop").setText(szNewEnd);
+				pgmElement.attribute(START).setText(szNewStart);
+				pgmElement.attribute(STOP).setText(szNewEnd);
 			}
 			
 			OutputFormat format = OutputFormat.createPrettyPrint();
@@ -94,10 +121,11 @@ public class EpgReader {
 
 	public static String formatStr(String instr) {
 		instr = instr.replaceAll("'","''");
-		/*instr = instr.replaceAll("'","'");
-        instr = instr.replaceAll("\"",""");
-        instr = instr.replaceAll(">",">");
+		instr = instr.replaceAll("[UK]'","");
+        instr = instr.replaceAll("[HD]","");
+        instr = instr.replaceAll("[\\[\\]\"]", "");
+        /*instr = instr.replaceAll(">",">");
         instr = instr.replaceAll("<","<");*/
-		return instr;
+		return instr.trim();
 	}
 }
