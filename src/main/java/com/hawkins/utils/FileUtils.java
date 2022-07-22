@@ -6,10 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
@@ -125,4 +131,35 @@ public class FileUtils {
             return MediaType.APPLICATION_OCTET_STREAM;
         }
     }
+    
+    public static boolean isAllowed(String fileName) {
+
+		Optional<String> extension = Optional.ofNullable(fileName)
+				.filter(f -> f.contains("."))
+				.map(f -> f.substring(fileName.lastIndexOf(".") + 1));		
+
+		return Arrays.asList(Constants.allowedExtensions).contains(extension.get());
+
+	}
+	
+	public static List<String> getFiles(String dir) throws IOException {
+		
+		log.info("Retrieving sorted list of files from {}", dir);
+		
+	    List<String> fileList = new LinkedList<String>();
+	    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+	        for (Path path : stream) {
+	            if (!Files.isDirectory(path) && FileUtils.isAllowed(path.toString())) {
+	                fileList.add(path.getFileName()
+	                    .toString());
+	            }
+	        }
+	        if (!fileList.isEmpty()) {
+	        	Collections.sort(fileList);
+	        }
+	    }
+	    
+	    
+	    return fileList;
+	}
 }

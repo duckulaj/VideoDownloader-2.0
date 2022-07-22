@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hawkins Media Server</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<form class="form-inline my-2 my-lg-0" th:action="@{/getVideos}"
+				th:object="${searchFolder}" th:method="get" action="">
+				<input class="form-control mr-sm-2" type="search"
+					placeholder="Search" aria-label="Search" name="searchFolder"
+					id="searchfolder" th:value="${searchFolder}"></input>
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+					value="Search Folder">
+					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+					Search Folder
+				</button>
+			</form>
+		</div>
+	</nav>
+
+
+	
+</body>
+</html>

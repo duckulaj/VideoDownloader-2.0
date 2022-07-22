@@ -1,5 +1,8 @@
 package com.hawkins.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Constants {
 	
@@ -43,6 +46,12 @@ public class Constants {
 	public static final String SD = "SD";
 	public static final String HD = "HD";
 	public static final String ADULT = "For Adults";
+	
+	public static final String[] allowedExtensions = {"mp4","ts"};
+	public static final List<String> toBeConverted = new ArrayList<String>(Arrays.asList(".ts"));
+	
+	// public static final Long maxFileSize = 2147483648L;
+	public static final Long maxFileSize = 1073741824L;
 	
 	
 }
