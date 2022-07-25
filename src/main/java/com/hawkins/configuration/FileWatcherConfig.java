@@ -25,7 +25,7 @@ public class FileWatcherConfig {
 		
 		DownloadProperties dp = DownloadProperties.getInstance();
 		
-		FileSystemWatcher fileSystemWatcher = new FileSystemWatcher(true, Duration.ofMillis(5000L), Duration.ofMillis(3000L));
+		FileSystemWatcher fileSystemWatcher = new FileSystemWatcher(true, Duration.ofMillis(dp.getFileWatcherPollingDuration()), Duration.ofMillis(dp.getFileWatcherPollingDuration() - 2000L));
 		//fileSystemWatcher.addSourceDirectory(new File("/home/jonathan/Downloads/xteveFiles"));
 		fileSystemWatcher.addSourceDirectory(new File(dp.getFileWatcherLocation()));
 		fileSystemWatcher.addListener(new MyFileChangeListener());

@@ -834,10 +834,11 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	}
 
 	private void updateFileName(DownloadEntry ent) {
-		log.info("checking for same named file on disk...");
-		String id = ent.getId();
-		File f = new File(getOutputFolder(id), ent.getFile());
 		
+		String id = ent.getId();
+		File f = new File(getOutputFolder(id), ent.getOriginalFileName());
+		
+		log.info("checking for file named {}",f.getName());
 		int c = 1;
 		while (f.exists()) {
 			String ext = DManagerUtils.getExtension(f.getAbsolutePath());
@@ -850,7 +851,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 		}
 		
 		if (ent.getFile() != f.getName()) {
-			log.info("Updating file name - old: " + ent.getFile() + " new: " + f.getName());
+			log.info("Updating file name - old: {}  new: {}", ent.getFile(), f.getName());
 			ent.setFile(f.getName());
 		}
 	}

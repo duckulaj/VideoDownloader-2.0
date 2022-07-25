@@ -34,6 +34,7 @@ public class DownloadProperties implements Runnable {
 	private String createStreamsSchedule = null;
 	private String epgFileName = null;
 	private String fileWatcherLocation=null;
+	private long fileWatcherPollingDuration = 5000L; //default to 5 seconds
 
 	public DownloadProperties() {
 
@@ -56,7 +57,8 @@ public class DownloadProperties implements Runnable {
 		this.setSearchMovieURL(props.getProperty("moviedb.searchMovieURL"));
 		this.setEpgFileName(props.getProperty("epg.filename"));
 		this.setFileWatcherLocation(props.getProperty("fileWatcher.location"));
-
+		this.setFileWatcherPollingDuration(Long.parseLong(props.getProperty("filewatcher.pollingDuration")));
+		
 	}
 
 	public static synchronized DownloadProperties getInstance()
@@ -185,6 +187,14 @@ public class DownloadProperties implements Runnable {
 
 	public void setFileWatcherLocation(String fileWatcherLocation) {
 		this.fileWatcherLocation = fileWatcherLocation;
+	}
+
+	public long getFileWatcherPollingDuration() {
+		return fileWatcherPollingDuration;
+	}
+
+	public void setFileWatcherPollingDuration(long fileWatcherPollingDuration) {
+		this.fileWatcherPollingDuration = fileWatcherPollingDuration;
 	}
 
 }
