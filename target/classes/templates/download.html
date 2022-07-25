@@ -146,6 +146,16 @@
 						</button>
 					</div>
 				</form>
+				<form class="navbar-form navbar-left" action="#"
+					th:action="@{/mediaPlayer}" method="get">
+					<div class="form-group">
+						<button id="btnMediaPlayer" type="submit"
+							class="btn btn-outline-success">
+							<span class="glyphicon glyphicon-film" aria-hidden="true"></span>
+							Media Player
+						</button>
+					</div>
+				</form>
 				<!-- <form class="navbar-form navbar-right" th:action="@{/searchPerson}"
 					th:object="${searchPerson}" th:method="get" action="">
 					<div class="form-group" style="display: inline;">

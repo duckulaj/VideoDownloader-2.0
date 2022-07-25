@@ -37,7 +37,7 @@ public class MediaController {
 		}
 		
 		model.addAttribute("searchFolder", searchFolder);
-		return "index";
+		return "mediaPlayer/index";
 	
 	}
 	
@@ -45,7 +45,7 @@ public class MediaController {
 	public String initial(Model model) {
 
 		model.addAttribute("searchFolder", "/");
-		return "search";
+		return "mediaPlayer/search";
 
 	}
 	
