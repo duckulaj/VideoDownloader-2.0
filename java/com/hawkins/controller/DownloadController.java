@@ -68,22 +68,27 @@ public class DownloadController {
 		this.myService = myService;
 	}
 
+	/*
 	M3UPlayList playlist = new M3UPlayList();
 	M3UGroupList grouplist = new M3UGroupList();
 	DownloadProperties downloadProperties = DownloadProperties.getInstance();
 	DmProperties dmProperties = DmProperties.getInstance();
+	*/
 	
-	
+	M3UPlayList playlist;
+	M3UGroupList grouplist;
+	DownloadProperties downloadProperties;
+	DmProperties dmProperties;
 
 
 	@ModelAttribute
 	public void initValues(Model model) {
 		
-		dmProperties = DmProperties.getInstance();;
-		downloadProperties = DownloadProperties.getInstance();
-		playlist = M3UPlayList.getInstance();
-		grouplist = M3UGroupList.getInstance();
-
+		/*
+		 * dmProperties = DmProperties.getInstance();; downloadProperties =
+		 * DownloadProperties.getInstance(); playlist = M3UPlayList.getInstance();
+		 * grouplist = M3UGroupList.getInstance();
+		 */
 	}
 
 	@GetMapping("/")
@@ -96,7 +101,8 @@ public class DownloadController {
 			log.debug("initial :: Normal is {}", device.isNormal());
 			log.debug("initial :: Tablet is {}", device.isTablet());
 		}
-		model.addAttribute(Constants.GROUPS, M3UParser.sortGrouplist(grouplist.getGroupList()));
+		// model.addAttribute(Constants.GROUPS, M3UParser.sortGrouplist(grouplist.getGroupList()));
+		model.addAttribute(Constants.GROUPS, grouplist.getGroupList());
 		model.addAttribute(Constants.SELECTEDGROUP, new M3UGroup());
 		model.addAttribute(Constants.SEARCHFILTER, new String());
 		model.addAttribute(Constants.MOVIEDB, MovieDb.getInstance());
@@ -211,6 +217,10 @@ public class DownloadController {
 	public String download(Model model, @RequestParam String name, HttpServletResponse response,
 			HttpServletRequest request) {
 
+		if (downloadProperties == null) {
+			downloadProperties = DownloadProperties.getInstance();
+		}
+		
 		if (log.isDebugEnabled()) {
 			log.debug("download {}", name);
 		}

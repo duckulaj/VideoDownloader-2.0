@@ -43,7 +43,12 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 	}
 
 	public void start() {
-		log.info("creating folder {}", folder);
+		
+		if (log.isDebugEnabled()) {
+			log.debug("creating folder {}", folder);
+		}
+		
+		
 		new File(folder).mkdirs();
 		chunks = new LinkedList<Segment>();
 		try {

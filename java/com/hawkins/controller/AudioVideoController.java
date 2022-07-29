@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,7 +50,6 @@ public class AudioVideoController {
 			Path pathIn = Paths.get(testPath, fileName);
 			Path pathOut = Paths.get(testPath, transcodedFileName);
 			try {
-				log.info("Transcoding {} to {}", pathIn.toString(), pathOut.toString());
 				Transcoding transcoder = new Transcoding();
 				transcoder.transcode(pathIn, pathOut);
 				fileName = transcodedFileName;

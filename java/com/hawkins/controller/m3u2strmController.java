@@ -21,11 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class m3u2strmController {
 
-		
-	DownloadProperties downloadProperties = DownloadProperties.getInstance();
-	DmProperties dmProperties = DmProperties.getInstance();
-	M3UGroupList grouplist = M3UGroupList.getInstance();
-	
 	@ModelAttribute
 	public void initValues(Model model) {
 		
@@ -35,12 +30,9 @@ public class m3u2strmController {
 		
 		log.info("Starting convertM3UtoStream()");
 		
-		EpgReader epgReader = new EpgReader();
-		epgReader.changeLocalTime();
-		
 		M3UtoStrm.convertM3UtoStream();
 		
-		model.addAttribute(Constants.GROUPS, M3UParser.sortGrouplist(grouplist.getGroupList()));
+		model.addAttribute(Constants.GROUPS, M3UGroupList.getInstance().getGroupList());
 		model.addAttribute(Constants.SELECTEDGROUP, new M3UGroup());
 		model.addAttribute(Constants.SEARCHFILTER, new String());
 		model.addAttribute(Constants.MOVIEDB, MovieDb.getInstance());
