@@ -167,7 +167,7 @@ public class HttpChannel extends AbstractChannel {
 				if (code == 407 || code == 401) {
 					if (javaClientRequired) {
 						log.info("asking for password");
-						boolean proxy = code == 407;
+						// boolean proxy = code == 407;
 						/*
 						 * if (!chunk.promptCredential(hc.getHost(), proxy)) { errorCode =
 						 * XDMConstants.ERR_INVALID_RESP; closeImpl(); return false; }

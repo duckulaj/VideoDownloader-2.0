@@ -5,13 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.hawkins.epg.EpgReader;
 import com.hawkins.m3u.M3UGroup;
 import com.hawkins.m3u.M3UGroupList;
-import com.hawkins.m3u.M3UParser;
 import com.hawkins.m3u.M3UtoStrm;
-import com.hawkins.properties.DmProperties;
-import com.hawkins.properties.DownloadProperties;
 import com.hawkins.utils.Constants;
 import com.hawkins.utils.MovieDb;
 

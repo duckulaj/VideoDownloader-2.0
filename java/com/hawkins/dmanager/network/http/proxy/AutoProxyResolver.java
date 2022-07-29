@@ -2,8 +2,6 @@ package com.hawkins.dmanager.network.http.proxy;
 
 import java.net.URL;
 
-import com.hawkins.dmanager.network.http.WebProxy;
-
 public class AutoProxyResolver {
 
 	private static AbstractAutoProxyHandler handler;

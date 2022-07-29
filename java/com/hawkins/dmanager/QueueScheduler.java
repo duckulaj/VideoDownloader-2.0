@@ -37,7 +37,6 @@ public class QueueScheduler implements Runnable {
 
 	@Override
 	public void run() {
-		long lastUpdateChecked = 0;
 		try {
 			Calendar cal = Calendar.getInstance();
 
@@ -113,18 +112,7 @@ public class QueueScheduler implements Runnable {
 					log.info(e2.getMessage());
 				}
 
-				long now = System.currentTimeMillis();
-				/*
-				 * if (now - lastUpdateChecked > 3600 * 1000) { int stat =
-				 * UpdateChecker.getUpdateStat(); switch (stat) { case
-				 * UpdateChecker.NO_UPDATE_AVAILABLE: break; case
-				 * UpdateChecker.APP_UPDATE_AVAILABLE: XDMApp.getInstance().notifyAppUpdate();
-				 * break; case UpdateChecker.COMP_NOT_INSTALLED:
-				 * XDMApp.getInstance().notifyComponentInstall(); break; case
-				 * UpdateChecker.COMP_UPDATE_AVAILABLE:
-				 * XDMApp.getInstance().notifyComponentUpdate(); break; } }
-				 */
-				lastUpdateChecked = now;
+				// long now = System.currentTimeMillis();
 			}
 		} catch (Exception e) {
 			log.info("error in scheduler: " + e);

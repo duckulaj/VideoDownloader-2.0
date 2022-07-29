@@ -25,7 +25,6 @@ import com.hawkins.dmanager.downloaders.SegmentImpl;
 import com.hawkins.dmanager.downloaders.SegmentInfo;
 import com.hawkins.dmanager.downloaders.SegmentListener;
 import com.hawkins.dmanager.downloaders.http.HttpChannel;
-import com.hawkins.dmanager.downloaders.http.HttpDownloader;
 import com.hawkins.dmanager.downloaders.metadata.DashMetadata;
 import com.hawkins.dmanager.downloaders.metadata.HttpMetadata;
 import com.hawkins.dmanager.mediaconversion.FFmpeg;
@@ -306,7 +305,7 @@ public class DashDownloader extends Downloader implements SegmentListener, Media
 				}
 			}
 
-			HttpDownloader d = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
+			// HttpDownloader d = new HttpDownloader(id, Config.getInstance().getTemporaryFolder(), metadata);
 			// d.registerListener(this.listener);
 			// listener.downloadUpdated(id);
 		} catch (Exception e) {

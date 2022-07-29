@@ -24,7 +24,6 @@ public class HttpContext {
 
 	private boolean init = false;
 	private SSLContext sslContext;
-	private ICredentialManager credentialMgr;
 	private static HttpContext _this;
 
 	public static HttpContext getInstance() {
@@ -35,7 +34,6 @@ public class HttpContext {
 	}
 
 	public void registerCredentialManager(ICredentialManager mgr) {
-		credentialMgr = mgr;
 	}
 
 	public SSLContext getSSLContext() {

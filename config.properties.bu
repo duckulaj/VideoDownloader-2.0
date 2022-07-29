@@ -1,4 +1,4 @@
-#Fri Jul 29 12:40:55 BST 2022
+#Fri Jul 29 12:40:48 BST 2022
 moviedb.apikey=56744a89f97f5119fe2a2306794d29a3
 channels=http\://line.maintv.live/get.php?username\=53A119&password\=6C8204&type\=m3u_plus&output\=mpegts
 downloadPath=/home/jonathan/videoDownloader/

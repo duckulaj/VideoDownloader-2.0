@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MonitoringSession implements Runnable {
 	
 
-	private String msg204 = "HTTP/1.1 204 No Content\r\n" + "Content-length: 0\r\n\r\n";
+	
 
 	private Socket sock;
 	private InputStream inStream;
@@ -385,7 +385,7 @@ public class MonitoringSession implements Runnable {
 
 	private boolean processVideoManifest(ParsedHookData data) {
 		String url = data.getUrl();
-		String file = data.getFile();
+		// String file = data.getFile();
 		String contentType = data.getContentType();
 		if (contentType == null) {
 			contentType = "";

@@ -1,8 +1,5 @@
 package com.hawkins.dmanager.mediaconversion;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class MediaFormats {
 	private static MediaFormat[] supportedFormats;
 	static {

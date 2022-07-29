@@ -72,7 +72,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 	
 	public static void instanceStarted() {
 		log.info("instance starting...");
-		final DManagerApp app = DManagerApp.getInstance();
+		DManagerApp.getInstance();
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -497,32 +497,7 @@ public class DManagerApp implements DownloadListener, DownloadWindowListener, Co
 			return;
 		}
 
-		DownloadEntry[] downloadListJsonArray;
-
-		try {
-
-			/*
-			 * Gson gson = new GsonBuilder().create(); downloadListJsonArray =
-			 * gson.fromJson(Files.newBufferedReader(new
-			 * File(Config.getInstance().getDataFolder(),
-			 * "downloads.json").toPath()),DownloadEntry[].class);
-			 * 
-			 * for (DownloadEntry ent : downloadListJsonArray) {
-			 * 
-			 * String id = ent.getId(); if (!ent.isMetaDataFound()) { HttpMetadata metadata
-			 * = HttpMetadata.load(id); ent.setMetaDataFound(true);
-			 * ent.setMetaData(metadata); } downloads.put(id, ent);
-			 * downloaders.put(ent.getId(), new
-			 * HttpDownloader(id,Config.getInstance().getTemporaryFolder(),
-			 * ent.getMetaData())); }
-			 */
-
-			saveDownloadList(); // showDownloadsListProgress();
-
-		} catch (Exception e) {
-			log.info(e.getMessage());
-		}
-
+		
 	}
 
 	private void saveDownloadList() {

@@ -100,8 +100,7 @@ public class FileUtils {
 			fileReader = new FileReader(thisFile);
 			
 			BufferedReader br = new BufferedReader(fileReader);
-			String s;              
-			while((s=br.readLine())!=null)
+			while((br.readLine())!=null)
 			{
 				lineCount++; 
 

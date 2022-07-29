@@ -347,7 +347,7 @@ public class DownloadController {
 		
 		ArrayList<String> newProperties = new ArrayList<>(Arrays.asList(channels, fullM3U, downloadPath, movieDbURL, movieDbAPI, searchMovieURL));
 		
-		model.addAttribute(Constants.SETTINGS, downloadProperties.updateSettings(newProperties));
+		model.addAttribute(Constants.SETTINGS, DownloadProperties.getInstance().updateSettings(newProperties));
 		
 		model.addAttribute(Constants.MOVIEDB, new MovieDb());
 		model.addAttribute(Constants.SELECTEDGROUP, new M3UGroup());

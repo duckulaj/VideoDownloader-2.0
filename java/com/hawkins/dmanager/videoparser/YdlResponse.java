@@ -26,8 +26,8 @@ public class YdlResponse {
 	private static int DASH_VIDEO_ONLY = 23, DASH_AUDIO_ONLY = 24;
 
 	public static ArrayList<YdlVideo> parse(InputStream in) throws Exception {
-		JsonParser parser = new JsonParser();
-		JsonObject obj = (JsonObject) parser.parse(new InputStreamReader(in));
+		
+		JsonObject obj = (JsonObject) JsonParser.parseReader(new InputStreamReader(in));
 		JsonArray entries = (JsonArray) obj.get("entries");
 		
 		if (log.isDebugEnabled()) {

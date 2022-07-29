@@ -7,9 +7,7 @@ import com.hawkins.dmanager.network.http.HeaderCollection;
 import com.hawkins.dmanager.util.DManagerUtils;
 import com.hawkins.dmanager.util.NetUtils;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ParsedHookData {
 
 	public static ParsedHookData parse(byte[] b) throws UnsupportedEncodingException {

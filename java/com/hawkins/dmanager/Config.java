@@ -45,8 +45,6 @@ public class Config {
 	private boolean firstRun;
 	private String language;
 
-	private DmProperties dmProperties;
-	
 	public String getLanguage() {
 		return language;
 	}
@@ -69,7 +67,7 @@ public class Config {
 
 	void load() {
 		
-		dmProperties = DmProperties.getInstance();
+		DmProperties.getInstance();
 	}
 
 	private static Config _config;

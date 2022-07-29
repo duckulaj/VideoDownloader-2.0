@@ -22,11 +22,8 @@ public class SegmentImpl implements Segment {
 	private volatile AbstractChannel channel;
 
 	private long bytesRead1;
-	private long bytesRead2;
 	private long time1;
-	private long time2;
 	private float transferRate;
-	private Config config;
 	private volatile boolean stop;
 	private int errorCode;
 	private Object tag;
@@ -37,8 +34,7 @@ public class SegmentImpl implements Segment {
 		this.cl = cl;
 		this.folder = folder;
 		this.time1 = System.currentTimeMillis();
-		this.time2 = time1;
-		this.config = Config.getInstance();
+		Config.getInstance();
 		outStream = new RandomAccessFile(new File(folder, id), "rw");
 		
 		if (log.isDebugEnabled()) {
@@ -53,9 +49,7 @@ public class SegmentImpl implements Segment {
 		this.length = len;
 		this.downloaded = dwn;
 		this.time1 = System.currentTimeMillis();
-		this.time2 = time1;
 		this.bytesRead1 = dwn;
-		this.bytesRead2 = dwn;
 		try {
 			outStream = new RandomAccessFile(new File(folder, id), "rw");
 			outStream.seek(dwn);
@@ -67,7 +61,7 @@ public class SegmentImpl implements Segment {
 			}
 			throw new IOException(e);
 		}
-		this.config = Config.getInstance();
+		Config.getInstance();
 	}
 
 	@Override
@@ -118,7 +112,7 @@ public class SegmentImpl implements Segment {
 		if (stop)
 			return;
 		cl.chunkInitiated(id);
-		time2 = System.currentTimeMillis();
+		System.currentTimeMillis();
 	}
 
 	@Override

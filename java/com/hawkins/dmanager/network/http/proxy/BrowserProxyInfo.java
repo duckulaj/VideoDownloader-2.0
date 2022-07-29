@@ -156,11 +156,11 @@ public final class BrowserProxyInfo
     this._overrides = paramArrayOfString;
   }
   
-  public void setOverrides(List paramList)
+  public void setOverrides(List<String> paramList)
   {
     if (paramList != null)
     {
-      ArrayList localArrayList = new ArrayList(paramList);
+      ArrayList<String> localArrayList = new ArrayList<String>(paramList);
       this._overrides = new String[localArrayList.size()];
       this._overrides = ((String[])localArrayList.toArray(this._overrides));
     }

@@ -5,9 +5,7 @@ import java.io.OutputStream;
 
 import com.hawkins.dmanager.network.http.HeaderCollection;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class Response {
 	private int code;
 	private String message;

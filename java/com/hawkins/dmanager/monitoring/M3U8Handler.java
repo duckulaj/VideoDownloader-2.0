@@ -10,9 +10,7 @@ import com.hawkins.dmanager.downloaders.metadata.manifests.M3U8Manifest.M3U8Medi
 import com.hawkins.dmanager.util.DManagerUtils;
 import com.hawkins.dmanager.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class M3U8Handler {
 	
 	public static boolean handle(File m3u8file, ParsedHookData data) {

@@ -2,9 +2,7 @@ package com.hawkins.dmanager.mediaconversion;
 
 import com.hawkins.dmanager.ui.res.StringResource;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class MediaFormat {
 	public MediaFormat() {
 	}

@@ -26,8 +26,8 @@ public class VideoDownloaderResponse {
 	private static int DASH_VIDEO_ONLY = 23, DASH_AUDIO_ONLY = 24;
 
 	public static ArrayList<YdlVideo> parse(InputStream in) throws Exception {
-		JsonParser parser = new JsonParser();
-		JsonObject obj = (JsonObject) parser.parse(new InputStreamReader(in));
+		
+		JsonObject obj = (JsonObject) JsonParser.parseReader(new InputStreamReader(in));
 		JsonArray entries = (JsonArray) obj.get("entries");
 		
 		if (log.isDebugEnabled()) {
@@ -92,7 +92,6 @@ public class VideoDownloaderResponse {
 					fragments[j] = baseUrl + frag.get("path").getAsString();
 				}
 			}
-			format.fragments = fragments;
 		}
 		formatList.add(format);
 
@@ -109,7 +108,7 @@ public class VideoDownloaderResponse {
 			// ((fmt.formatNote + "").toLowerCase().contains("dash video"))
 			// {
 			for (int j = 0; j < formatList.size(); j++) {
-				YdlFormat fmt2 = formatList.get(j);
+				formatList.get(j);
 				YdlMediaFormat media = new YdlMediaFormat();
 				media.type = DASH_HTTP;
 				if (type != DASH_AUDIO_ONLY) {
@@ -124,11 +123,8 @@ public class VideoDownloaderResponse {
 						log.info("unsupported protocol: " + format.protocol);
 						continue;
 					}
-					media.url = format.url;
 					media.ext = format.ext;
 					media.width = format.width;
-					media.height = format.height;
-
 					media.format = createFormat(media.ext, format.format, null, format.acodec, format.vcodec,
 							format.width, format.height);
 					// media.format = "[" + (media.ext + "]").toUpperCase() + " " +
@@ -219,19 +215,13 @@ public class VideoDownloaderResponse {
 		return -1;
 	}
 
-	private static int getInt(Object obj) {
-		if (obj == null) {
-			return -1;
-		}
-		if (obj.toString().contains("none"))
-			return -1;
-		return Integer.parseInt(obj + "");
-	}
-
-	private static String getString(Object obj) {
-		return (String) obj;
-	}
-
+	/*
+	 * private static int getInt(Object obj) { if (obj == null) { return -1; } if
+	 * (obj.toString().contains("none")) return -1; return Integer.parseInt(obj +
+	 * ""); }
+	 * 
+	 * private static String getString(Object obj) { return (String) obj; }
+	 */
 	public static class YdlVideo {
 		public String title;
 		public ArrayList<YdlMediaFormat> mediaFormats = new ArrayList<>();
@@ -304,13 +294,12 @@ public class VideoDownloaderResponse {
 
 	private static class YdlMediaFormat {
 		public int type;
-		public String url;
-		public String[] audioSegments, videoSegments;
 		public String format;
 		public String ext;
 		public ArrayList<HttpHeader> headers = new ArrayList<>();
+		@SuppressWarnings("unused")
 		public ArrayList<HttpHeader> headers2 = new ArrayList<>();
-		public int width, height;
+		public int width;
 
 		@Override
 		public String toString() {
@@ -319,9 +308,9 @@ public class VideoDownloaderResponse {
 	}
 
 	private static class YdlFormat {
+		@SuppressWarnings("unused")
 		String url;
 		String format;
-		String[] fragments;
 		String formatNote;
 		int width, height;
 		String protocol;

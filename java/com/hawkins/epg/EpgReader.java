@@ -4,8 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 
 import org.dom4j.Document;
@@ -15,7 +13,6 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import com.hawkins.m3u.M3UParser;
 import com.hawkins.properties.DownloadProperties;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +30,6 @@ public class EpgReader {
 	private static final String STOP = "stop";
 	private static final String DISPLAY_NAME = "display-name"; 
 	
-	private static Date startTime = null;
-	private static Date endTime = null;
-	
 	public EpgReader() {
 		super();
 	}
@@ -48,8 +42,8 @@ public class EpgReader {
 		
 		
 
-		SimpleDateFormat xmlDateFormat = new SimpleDateFormat("yyyyMMddHHmmss Z");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		// SimpleDateFormat xmlDateFormat = new SimpleDateFormat("yyyyMMddHHmmss Z");
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		SAXReader reader = new SAXReader();
 

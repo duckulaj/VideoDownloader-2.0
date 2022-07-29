@@ -2,7 +2,7 @@ package com.hawkins.dmanager.network.http.proxy;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.StringTokenizer;
+
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -10,7 +10,7 @@ import javax.script.ScriptEngineManager;
 public class DManagerAutoProxyHandler extends AbstractAutoProxyHandler {
 	private ScriptEngineManager manager = null;
 	private ScriptEngine engine = null;
-	private static final String jsDnsResolve = "    function dnsResolve(host){\n                       return String(obj.dnsResolve(host));\n     }";
+	
 
 	public String dnsResolve(String paramString) {
 		String str = "";
@@ -86,7 +86,7 @@ public class DManagerAutoProxyHandler extends AbstractAutoProxyHandler {
 //		return tmp145_142;
 //	}
 
-	private int positiveMin(int paramInt1, int paramInt2) {
+	/*private int positiveMin(int paramInt1, int paramInt2) {
 		if (paramInt1 < 0) {
 			return paramInt2;
 		}
@@ -97,5 +97,5 @@ public class DManagerAutoProxyHandler extends AbstractAutoProxyHandler {
 			return paramInt2;
 		}
 		return paramInt1;
-	}
+	}*/
 }

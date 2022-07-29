@@ -60,7 +60,7 @@ public class FormatUtilities {
 		} else {
 			if (ent.getSize() > 0) {
 				String downloadedStr = formatSize(ent.getDownloaded());
-				String progressStr = ent.getProgress() + "%";
+				// String progressStr = ent.getProgress() + "%";
 				String downloadSpeed = Utils.format(ent.getDownloadSpeed(), 2);
 				return statStr + " [ " + downloadedStr + " / " + sizeStr + " ] " + downloadSpeed + "/s : ETA " + ent.getEta();
 			} else {

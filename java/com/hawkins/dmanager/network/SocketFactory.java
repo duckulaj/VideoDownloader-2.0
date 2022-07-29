@@ -10,7 +10,7 @@ import com.hawkins.dmanager.Config;
 import com.hawkins.dmanager.network.http.HttpContext;
 
 public class SocketFactory {
-	private static int timeOut = 0;
+	// private static int timeOut = 0;
 	private static int tcpBufSize = 1024*64;
 
 	// private static SSLContext sslContext;

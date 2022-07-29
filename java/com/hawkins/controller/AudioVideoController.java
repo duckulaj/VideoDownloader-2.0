@@ -1,15 +1,11 @@
 package com.hawkins.controller;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -153,12 +149,13 @@ public class AudioVideoController {
 		}
 	}
 
-	private String getFilePath(String location) {
-		URL url = this.getClass().getResource(location);
-
-
-		return new File(url.getFile()).getAbsolutePath();
-	}
+	/*
+	 * private String getFilePath(String location) { URL url =
+	 * this.getClass().getResource(location);
+	 * 
+	 * 
+	 * return new File(url.getFile()).getAbsolutePath(); }
+	 */
 
 	private Long sizeFromFile(Path path) {
 		try {

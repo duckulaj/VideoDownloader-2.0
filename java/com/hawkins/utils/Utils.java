@@ -271,8 +271,7 @@ public class Utils {
 			con.setRequestMethod("GET");
 			con.setRequestProperty("Content-Type", "application/json");
 			
-			JsonParser jsonParser = new JsonParser();
-			JsonObject jsonObject = (JsonObject)jsonParser.parse(
+			JsonObject jsonObject = (JsonObject)JsonParser.parseReader(
 				      new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
 			
 			obj = jsonObject;
@@ -305,8 +304,7 @@ public class Utils {
 			con.setRequestMethod("GET");
 			con.setRequestProperty("Content-Type", "application/json");
 			
-			JsonParser jsonParser = new JsonParser();
-			JsonObject jsonObject = (JsonObject)jsonParser.parse(
+			JsonObject jsonObject = (JsonObject)JsonParser.parseReader(
 				      new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
 			
 			obj = jsonObject;

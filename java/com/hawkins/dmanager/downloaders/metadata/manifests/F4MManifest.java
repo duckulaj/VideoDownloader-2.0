@@ -38,11 +38,9 @@ public class F4MManifest {
 	private boolean live;
 	private int fragCount;
 	private int segStart, fragStart;
-	private boolean isMetadata;
 	private int fragsPerSeg;
 	private F4MMedia selectedMedia;
 	private int segNum, fragNum;
-	private int lastFrag;
 	private String fragUrl, baseUrl;
 	private int discontinuity;
 	private String query;
@@ -70,8 +68,6 @@ public class F4MManifest {
 			segStart = segNum;
 			fragStart = fragNum;
 		}
-		// byte[] fragmentData = new byte[0];
-		lastFrag = fragNum;
 		System.out.println(fragNum + " " + fragCount);
 		if (fragNum >= fragCount)
 			throw new Exception("No fragment available for downloading");
@@ -356,7 +352,6 @@ public class F4MManifest {
 	private void parseBootstrapBox(byte[] bootstrapInfo, int pos) {
 		System.out.println("parsing abst");
 		live = false;
-		isMetadata = true;
 		// int version = readByte(bootstrapInfo, pos);
 		// int flags = (int) readInt24(bootstrapInfo, pos + 1);
 		// int bootstrapVersion = (int) readInt32(bootstrapInfo, pos + 4);
@@ -366,7 +361,6 @@ public class F4MManifest {
 		int update = (b & 0x10) >> 4;
 		if (((b & 0x20) >> 5) > 0) {
 			live = true;
-			isMetadata = false;
 		}
 		if (update == 0) {
 			segTable.clear();
